@@ -4,6 +4,7 @@ mod utils;
 use poise::serenity_prelude as serenity;
 use std::default::Default;
 use serde::Deserialize;
+use crate::commands::help::help;
 use crate::commands::ping::ping;
 use crate::commands::register::register;
 use crate::commands::register_commands::register_commands;
@@ -14,10 +15,6 @@ use crate::utils::event_handler::event_handler;
 struct Data {} // User data, which is stored and accessible in all command invocations
 type Error = Box<dyn std::error::Error + Send + Sync>;
 type Context<'a> = poise::Context<'a, Data, Error>;
-
-
-
-
 
 #[tokio::main]
 async fn main() {
@@ -31,7 +28,7 @@ async fn main() {
                 prefix: Some("!".into()),
                 ..Default::default()
             },
-            commands: vec![ping(), register(), register_commands()],
+            commands: vec![ping(), register(), register_commands(), help()],
             event_handler: |ctx, event, framework, data | {
                 Box::pin(event_handler(ctx, event, framework, data))
             },
