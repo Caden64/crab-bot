@@ -12,7 +12,7 @@ pub async fn event_handler(
     if let GuildMemberAddition { new_member, .. } = event {
         println!("{} Joined Server", new_member.user.name);
         let config = get_config().unwrap();
-        let default_role_id = *config.roles.get(REMOVE_ROLE_ID).expect("UNABLE TO GET REMOVE ROLE ID");
+        let default_role_id = *config.roles.private.get(REMOVE_ROLE_ID).expect("UNABLE TO GET REMOVE ROLE ID");
         new_member.add_role(&ctx.http, default_role_id).await?;
         println!("{} got default role", new_member.user.name)
     };

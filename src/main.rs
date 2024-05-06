@@ -1,5 +1,6 @@
 mod commands;
 mod utils;
+mod checks;
 
 use poise::serenity_prelude as serenity;
 use std::default::Default;

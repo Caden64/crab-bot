@@ -11,9 +11,15 @@ pub const GUILD_ID: &str = "GUILD_ID";
 pub struct ConfigData{
     pub token: HashMap<String, String>,
     pub guild: HashMap<String, u64>,
-    pub roles: HashMap<String, u64>,
+    pub roles: Roles,
     pub channels: HashMap<String, u64>,
     pub features: HashMap<String, bool>
+}
+
+#[derive(Debug, Deserialize)]
+pub struct Roles {
+    pub public: HashMap<String, u64>,
+    pub private: HashMap<String, u64>
 }
 
 pub fn get_config() -> Result<ConfigData, toml::de::Error>  {
