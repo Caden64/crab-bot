@@ -7,7 +7,7 @@ pub const REMOVE_ROLE_ID: &str = "REMOVE_ROLE_ID";
 pub const GUILD_ID: &str = "GUILD_ID";
 
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Clone)]
 pub struct ConfigData{
     pub token: HashMap<String, String>,
     pub guild: HashMap<String, u64>,
@@ -16,7 +16,7 @@ pub struct ConfigData{
     pub features: HashMap<String, bool>
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Clone)]
 pub struct Roles {
     pub public: HashMap<String, u64>,
     pub private: HashMap<String, u64>
