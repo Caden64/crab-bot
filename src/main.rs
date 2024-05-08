@@ -7,7 +7,7 @@ use std::default::Default;
 use serde::Deserialize;
 use crate::commands::help::help;
 use crate::commands::ping::ping;
-use crate::commands::register::register;
+use crate::commands::enroll::enroll;
 use crate::commands::register_commands::register_commands;
 use crate::commands::modal::component_modal;
 use crate::utils::config::{DISCORD_TOKEN, REMOVE_ROLE_ID, GUILD_ID, get_config, ConfigData};
@@ -32,7 +32,7 @@ async fn main() {
                 prefix: Some("!".into()),
                 ..Default::default()
             },
-            commands: vec![ping(), register(), register_commands(), help(), component_modal()],
+            commands: vec![ping(), enroll(), register_commands(), help(), component_modal()],
             event_handler: |ctx, event, framework, data | {
                 Box::pin(event_handler(ctx, event, framework, data))
             },
