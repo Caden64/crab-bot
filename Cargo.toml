@@ -1,8 +1,9 @@
 [package]
-name = "mlc_crab_bot"
+name = "crab_bot"
 version = "2.0.0"
 edition = "2021"
 license = "GPL-3"
+authors = ["Caden64", "Topazstix"]
 
 [dependencies]
 anyhow = "1.0.82"
