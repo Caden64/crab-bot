@@ -1,0 +1,4 @@
+services:
+  crab-bot:
+    build:
+      context: .
