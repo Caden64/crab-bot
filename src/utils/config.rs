@@ -6,6 +6,7 @@ pub const DISCORD_TOKEN: &str = "discord_token";
 pub const REMOVE_ROLE_ID: &str = "REMOVE_ROLE_ID";
 pub const GUILD_ID: &str = "GUILD_ID";
 pub const ADMIN_ROLE_ID: &str = "ADMIN_ROLE_ID";
+pub const ENROLL_CHANNEL: &str = "ENROLL_CHANNEL_ID";
 
 
 #[derive(Debug, Deserialize, Clone)]

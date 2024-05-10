@@ -2,19 +2,25 @@ use poise::serenity_prelude::{CreateMessage, EditMember, Mentionable, RoleId};
 use crate::{Context, Error};
 use crate::utils::college_autocomplete::college_autocomplete;
 use crate::checks::remove_role::remove_role;
+use crate::checks::enroll_channel::enroll_channel;
 use crate::utils::config::{ADMIN_ROLE_ID, REMOVE_ROLE_ID};
 
 #[poise::command(
 slash_command, guild_only,
-check = "remove_role"
+check = "remove_role", check = "enroll_channel"
 )]
 pub async fn enroll(
     ctx: Context<'_>,
+    #[description = "First and at least last initial"]
     name: String,
+    #[description = "Your student email"]
     email: String,
+    #[description = "Why are you interested in cyber club"]
     interests: String,
     #[autocomplete = "college_autocomplete"]
+    #[description = "What college do you go to"]
     university: String,
+    #[description = "Would you like to occasionally receive emails"]
     email_distro: Option<bool>,
 ) -> Result<(), Error> {
     if !name.contains(" ") {
