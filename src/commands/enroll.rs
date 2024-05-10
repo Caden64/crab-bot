@@ -45,7 +45,7 @@ pub async fn enroll(
     let http = ctx.http();
     let member_id = ctx.author().id;
     let remove_role_id = ctx.data().config_data.roles.private.get(REMOVE_ROLE_ID);
-
+    let error_builder = CreateMessage::new().content(format!("Hi {}, Something has gone wrong. The people with {} will help you!", ctx.author_member().await.unwrap().mention(), guild_id.unwrap().roles(&ctx.http()).await.unwrap().get(&RoleId::new(*ctx.data().config_data.roles.private.get(ADMIN_ROLE_ID).unwrap())).unwrap().mention()));
     match guild_id {
         Some(id) => {
             let builder = EditMember::new().roles(vec![uni_role]).nickname(format!("{} {}", first, last_initial));
@@ -55,23 +55,20 @@ pub async fn enroll(
                         match member.remove_role(&http, *role_id).await {
                             Ok(_) => (),
                             Err(_) => {
-                                let builder = CreateMessage::new().content(format!("Hi {}, Something has gone wrong. The people with {} will help you!", ctx.author_member().await.unwrap().mention(), guild_id.unwrap().roles(&ctx.http()).await.unwrap().get(&RoleId::new(*ctx.data().config_data.roles.private.get(ADMIN_ROLE_ID).unwrap())).unwrap().mention()));
-                                ctx.guild_channel().await.unwrap().send_message(&ctx.http(), builder).await?;
+                                ctx.guild_channel().await.unwrap().send_message(&ctx.http(), error_builder).await?;
                                 return Ok(());
                             }
                         }
                     }
                 },
                 Err(_) => {
-                    let builder = CreateMessage::new().content(format!("Hi {}, Something has gone wrong. The people with {} will help you!", ctx.author_member().await.unwrap().mention(), guild_id.unwrap().roles(&ctx.http()).await.unwrap().get(&RoleId::new(*ctx.data().config_data.roles.private.get(ADMIN_ROLE_ID).unwrap())).unwrap().mention()));
-                    ctx.guild_channel().await.unwrap().send_message(&ctx.http(), builder).await?;
+                    ctx.guild_channel().await.unwrap().send_message(&ctx.http(), error_builder).await?;
                     return Ok(());
                 }
             }
         },
         None => {
-            let builder = CreateMessage::new().content(format!("Hi people with {}, Something has gone wrong. The people with {} will help you!", ctx.author_member().await.unwrap().mention(), guild_id.unwrap().roles(&ctx.http()).await.unwrap().get(&RoleId::new(*ctx.data().config_data.roles.private.get(ADMIN_ROLE_ID).unwrap())).unwrap().mention()));
-            ctx.guild_channel().await.unwrap().send_message(&ctx.http(), builder).await?;
+            ctx.guild_channel().await.unwrap().send_message(&ctx.http(), error_builder).await?;
             return Ok(());
         }
     };
