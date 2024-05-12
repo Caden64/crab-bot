@@ -5,11 +5,11 @@ mod checks;
 use poise::serenity_prelude as serenity;
 use std::default::Default;
 use serde::Deserialize;
+use crate::commands::acknowledgement::acknowledgement;
 use crate::commands::help::help;
 use crate::commands::ping::ping;
 use crate::commands::enroll::enroll;
 use crate::commands::register_commands::register_commands;
-use crate::commands::modal::component_modal;
 use crate::utils::config::{DISCORD_TOKEN, REMOVE_ROLE_ID, GUILD_ID, get_config, ConfigData};
 use crate::utils::event_handler::event_handler;
 
@@ -28,11 +28,17 @@ async fn main() {
 
     let framework = poise::Framework::builder()
         .options(poise::FrameworkOptions {
+            pre_command: |ctx| {
+                Box::pin(async move {
+                    
+                    println!("{} called: {}", ctx.author().name,ctx.invoked_command_name(), );
+                })
+            },
             prefix_options: poise::PrefixFrameworkOptions {
                 prefix: Some("!".into()),
                 ..Default::default()
             },
-            commands: vec![ping(), enroll(), register_commands(), help(), component_modal()],
+            commands: vec![ping(), enroll(), register_commands(), help(), acknowledgement()],
             event_handler: |ctx, event, framework, data | {
                 Box::pin(event_handler(ctx, event, framework, data))
             },
