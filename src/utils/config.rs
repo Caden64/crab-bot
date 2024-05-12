@@ -2,11 +2,23 @@ use std::collections::HashMap;
 use serde::Deserialize;
 
 // constants 
+
+// token
 pub const DISCORD_TOKEN: &str = "discord_token";
-pub const REMOVE_ROLE_ID: &str = "REMOVE_ROLE_ID";
+// guild
 pub const GUILD_ID: &str = "GUILD_ID";
+pub const PRESIDENT: &str = "PRESIDENT";
+// roles.private
+pub const REMOVE_ROLE_ID: &str = "REMOVE_ROLE_ID";
 pub const ADMIN_ROLE_ID: &str = "ADMIN_ROLE_ID";
+// roles.public
+// should not have things in here that could be subject to PII
+// channels
+pub const DESTIN_CHANNEL: &str = "";
 pub const ENROLL_CHANNEL: &str = "ENROLL_CHANNEL_ID";
+pub const READING_CHANNEL: &str = "";
+pub const LOGGING_CHANNEL: &str = "";
+pub const MEETING_CHANNEL: &str = "";
 
 
 #[derive(Debug, Deserialize, Clone)]

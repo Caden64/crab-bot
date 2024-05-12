@@ -22,7 +22,7 @@ pub async  fn acknowledgement(ctx: Context<'_>) -> Result<(), Error> {
         .filter( move |mci| mci.data.custom_id == ctx_uuid.to_string()).await {
         let enroll_message = CreateMessage::new().content(format!("{}, You may now enroll in {}", mci.user.mention(), ctx.guild().unwrap().name));
         let edit_user = EditMember::new().roles(vec![*ctx.data().config_data.roles.private.get(REMOVE_ROLE_ID).unwrap()]);
-        if mci.user.has_role(&ctx.http(), ctx.guild_id().unwrap(), *ctx.data().config_data.roles.private.get(REMOVE_ROLE_ID).unwrap()).await.is_ok() {
+        if ctx.guild_id().unwrap().member(&ctx.http(), mci.user.id).await.unwrap().roles.len() == 0{
             ctx.guild_id().unwrap().edit_member(ctx.http(), mci.user.id, edit_user).await.unwrap();
             mci.user.create_dm_channel(&ctx.http()).await.unwrap().send_message(&ctx.http(), enroll_message).await.unwrap();
         }
