@@ -18,7 +18,7 @@ pub const DESTIN_CHANNEL: &str = "";
 pub const ENROLL_CHANNEL: &str = "ENROLL_CHANNEL_ID";
 pub const READING_CHANNEL: &str = "";
 pub const LOGGING_CHANNEL: &str = "";
-pub const MEETING_CHANNEL: &str = "";
+pub const MEETING_CHANNEL: &str = "MEETING_CHANNEL_ID";
 
 
 #[derive(Debug, Deserialize, Clone)]

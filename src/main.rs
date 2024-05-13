@@ -15,7 +15,8 @@ use crate::utils::event_handler::event_handler;
 
 #[derive(Debug, Deserialize)]
 struct Data {
-    config_data: ConfigData
+    config_data: ConfigData,
+    meeting_time: bool
 } // User data, which is stored and accessible in all command invocations
 type Error = Box<dyn std::error::Error + Send + Sync>;
 type Context<'a> = poise::Context<'a, Data, Error>;
@@ -47,7 +48,7 @@ async fn main() {
         .setup(|ctx, _ready, framework| {
             Box::pin(async move {
                 poise::builtins::register_globally(ctx, &framework.options().commands).await?;
-                Ok(Data {config_data: config.clone()})
+                Ok(Data {config_data: config.clone(), meeting_time: false})
             })
         })
         .build();
