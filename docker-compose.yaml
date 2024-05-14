@@ -1,21 +1,10 @@
 services:
   crab-bot:
-    depends_on:
-      - db
     build:
       context: .
     networks:
-      - crab_net
       - internet
 
-  db:
-    image: postgres
-    volumes:
-      - ./data:/var/lib/postgresql/data
-    networks:
-      - crab_net
-
 networks:
-  crab_net:
   internet:
     driver: "bridge"

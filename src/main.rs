@@ -1,6 +1,7 @@
 mod commands;
 mod utils;
 mod checks;
+mod storage;
 
 use poise::serenity_prelude as serenity;
 use std::default::Default;
@@ -27,6 +28,7 @@ async fn main() {
     let config = get_config().expect("Unable to properly decode config.toml file");
     let token = config.token.get(DISCORD_TOKEN).expect("Unable to find discord_token in config.toml file").to_string();
     let intents = serenity::GatewayIntents::non_privileged() | serenity::GatewayIntents::MESSAGE_CONTENT | serenity::GatewayIntents::GUILD_MEMBERS;
+    
 
     let framework = poise::Framework::builder()
         .options(poise::FrameworkOptions {
