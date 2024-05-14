@@ -1,0 +1,17 @@
+[token]
+discord_token = ""
+[guild]
+GUILD_ID = 1
+PRESIDENT = 1
+[roles.public]
+ROLE1 = 1
+ROLE2 = 2
+ROLE3 = 3
+OTHER = 4
+[roles.private]
+PRIVATE_ROLE_ID_1 = 1
+PRIVATE_ROLE_ID_2 = 1
+[channels]
+ENROLL_CHANNEL_ID = 1
+MEETING_CHANNEL_ID = 1
+[features]

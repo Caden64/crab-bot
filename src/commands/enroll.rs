@@ -1,8 +1,13 @@
+use log::error;
+use poise::CreateReply;
 use poise::serenity_prelude::{CreateMessage, EditMember, Mentionable, RoleId};
-use crate::{Context, Error};
+use serde_json::json;
+use crate::{Context, Error, storage};
 use crate::utils::college_autocomplete::college_autocomplete;
 use crate::checks::remove_role::remove_role;
 use crate::checks::enroll_channel::enroll_channel;
+use crate::storage::database_storage::save_to_json;
+use crate::storage::user::User;
 use crate::utils::config::{ADMIN_ROLE_ID, REMOVE_ROLE_ID};
 
 #[poise::command(
@@ -23,8 +28,9 @@ pub async fn enroll(
     #[description = "Would you like to occasionally receive emails"]
     email_distro: Option<bool>,
 ) -> Result<(), Error> {
-    if !name.contains(" ") {
-       ctx.reply("Need a last initial included").await?; 
+
+    if name.split_whitespace().count() == 0{
+       ctx.reply("Need a last initial included").await?;
         return Ok(())
     }
     let first = name.split_ascii_whitespace().next().unwrap();
@@ -45,7 +51,7 @@ pub async fn enroll(
     let http = ctx.http();
     let member_id = ctx.author().id;
     let remove_role_id = ctx.data().config_data.roles.private.get(REMOVE_ROLE_ID);
-    let error_builder = CreateMessage::new().content(format!("Hi {}, Something has gone wrong. The people with {} will help you!", ctx.author_member().await.unwrap().mention(), guild_id.unwrap().roles(&ctx.http()).await.unwrap().get(&RoleId::new(*ctx.data().config_data.roles.private.get(ADMIN_ROLE_ID).unwrap())).unwrap().mention()));
+    let error_format = format!("Hi {}, Something has gone wrong. The people with {} will help you!", ctx.author_member().await.unwrap().mention(), guild_id.unwrap().roles(&ctx.http()).await.unwrap().get(&RoleId::new(*ctx.data().config_data.roles.private.get(ADMIN_ROLE_ID).unwrap())).unwrap().mention());
     match guild_id {
         Some(id) => {
             let builder = EditMember::new().roles(vec![uni_role]).nickname(format!("{} {}", first, last_initial));
@@ -55,23 +61,38 @@ pub async fn enroll(
                         match member.remove_role(&http, *role_id).await {
                             Ok(_) => (),
                             Err(_) => {
-                                ctx.guild_channel().await.unwrap().send_message(&ctx.http(), error_builder).await?;
+                                ctx.defer_ephemeral().await?;
+                                ctx.reply(error_format).await?;
                                 return Ok(());
                             }
                         }
                     }
                 },
                 Err(_) => {
-                    ctx.guild_channel().await.unwrap().send_message(&ctx.http(), error_builder).await?;
+                    ctx.defer_ephemeral().await?;
+                    ctx.reply(error_format).await?;
                     return Ok(());
                 }
             }
         },
         None => {
-            ctx.guild_channel().await.unwrap().send_message(&ctx.http(), error_builder).await?;
+            ctx.reply(error_format).await?;
             return Ok(());
         }
     };
-    ctx.reply(format!("You have registered as:\nName: {}\nEmail: {}\nInterests: {}\nUniversity: {}\nAdd to Email Distro: {}", format!("{} {}", first, last_initial), email, interests, university, email_distro)).await?;
+    ctx.reply(format!("You have registered as:\nName: {} {}\nEmail: {}\nInterests: {}\nUniversity: {}\nAdd to Email Distro: {}", first, last_initial, email, interests, university, email_distro)).await?;
+    let user_data_json = json!({
+        "user_id": ctx.author().id.get(),
+        "user_name": ctx.author().name,
+        "name": format!("{} {}", first, last_initial),
+        "university": university,
+        "email": email,
+        "interests": interests,
+        "email_distro": email_distro,
+    });
+    let user_data: User = serde_json::from_value(user_data_json).unwrap();
+    if let Err(e) = save_to_json(&user_data) {
+        error!("Error saving to json {:?}", e)
+    }
     Ok(())
 }
