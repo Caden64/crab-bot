@@ -89,6 +89,7 @@ pub async fn enroll(
         "email": email,
         "interests": interests,
         "email_distro": email_distro,
+        "points": 0,
     });
     let user_data: User = serde_json::from_value(user_data_json).unwrap();
     if let Err(e) = save_to_json(&user_data) {

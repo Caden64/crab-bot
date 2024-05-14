@@ -14,10 +14,10 @@ pub const ADMIN_ROLE_ID: &str = "ADMIN_ROLE_ID";
 // roles.public
 // should not have things in here that could be subject to PII
 // channels
-pub const DESTIN_CHANNEL: &str = "";
+// pub const DESTIN_CHANNEL: &str = "DESTIN_CHANNEL_ID";
 pub const ENROLL_CHANNEL: &str = "ENROLL_CHANNEL_ID";
-pub const READING_CHANNEL: &str = "";
-pub const LOGGING_CHANNEL: &str = "";
+// pub const READING_CHANNEL: &str = "READING_CHANNEL_ID";
+// pub const LOGGING_CHANNEL: &str = "LOGGING_CHANNEL_ID";
 pub const MEETING_CHANNEL: &str = "MEETING_CHANNEL_ID";
 
 
