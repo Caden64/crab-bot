@@ -4,6 +4,7 @@ mod checks;
 
 use poise::serenity_prelude as serenity;
 use std::default::Default;
+use std::sync::atomic::AtomicBool;
 use serde::Deserialize;
 use crate::commands::acknowledgement::acknowledgement;
 use crate::commands::help::help;
@@ -16,7 +17,7 @@ use crate::utils::event_handler::event_handler;
 #[derive(Debug, Deserialize)]
 struct Data {
     config_data: ConfigData,
-    meeting_time: bool
+    meeting_time: AtomicBool
 } // User data, which is stored and accessible in all command invocations
 type Error = Box<dyn std::error::Error + Send + Sync>;
 type Context<'a> = poise::Context<'a, Data, Error>;
@@ -48,7 +49,7 @@ async fn main() {
         .setup(|ctx, _ready, framework| {
             Box::pin(async move {
                 poise::builtins::register_globally(ctx, &framework.options().commands).await?;
-                Ok(Data {config_data: config.clone(), meeting_time: false})
+                Ok(Data {config_data: config.clone(), meeting_time: AtomicBool::new(false)})
             })
         })
         .build();
