@@ -21,6 +21,7 @@ pub const ENROLL_CHANNEL: &str = "ENROLL_CHANNEL_ID";
 pub const MEETING_CHANNEL: &str = "MEETING_CHANNEL_ID";
 
 
+// config file types
 #[derive(Debug, Deserialize, Clone)]
 pub struct ConfigData{
     pub token: HashMap<String, String>,
@@ -36,6 +37,7 @@ pub struct Roles {
     pub private: HashMap<String, u64>
 }
 
+// read and return result of the config file
 pub fn get_config() -> Result<ConfigData, toml::de::Error>  {
     let data = std::fs::read_to_string("config.toml").expect("Unable to find config.toml file");
     toml::from_str(&data)

@@ -8,6 +8,7 @@ use std::fs;
 use crate::storage::user::User;
 
 
+// save the user to enrollments.json
 pub fn save_to_json(enrollment: &User) -> Result<()> {
     let mut enrollments: HashMap<u64, User> = HashMap::new();
 
