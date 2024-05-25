@@ -2,11 +2,10 @@
  * Modular Database Storage/API Storage
  */
 
-use std::collections::HashMap;
-use std::io::Result;
-use std::fs;
 use crate::storage::user::User;
-
+use std::collections::HashMap;
+use std::fs;
+use std::io::Result;
 
 // save the user to enrollments.json
 pub fn save_to_json(enrollment: &User) -> Result<()> {
@@ -25,4 +24,4 @@ pub fn save_to_json(enrollment: &User) -> Result<()> {
     fs::write("enrollments.json", data)?;
 
     Ok(())
-}// end save_to_json
+} // end save_to_json

@@ -1,5 +1,5 @@
-pub mod ping;
-pub mod register_commands;
+pub mod acknowledgement;
 pub mod enroll;
 pub mod help;
-pub mod acknowledgement;
+pub mod ping;
+pub mod register_commands;
