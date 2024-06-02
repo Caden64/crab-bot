@@ -8,7 +8,9 @@ pub async fn award(
    users: User,
    points: u16,
 ) -> Result<(), Error>{
-   edit_user_points(&users.id.get(), points); 
-   ctx.reply(format!("Going to add {} points to {}", points, users.name)).await?;
+   if edit_user_points(&users.id.get(), points).is_some() {
+      ctx.reply(format!("Added {} points to {}", points, users.name)).await?;
+   }
+   ctx.reply(format!("Failed to add {} points to {}", points, users.name)).await?;
    Ok(()) 
 }
