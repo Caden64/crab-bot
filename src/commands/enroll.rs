@@ -5,7 +5,6 @@ use crate::storage::user::User;
 use crate::utils::college_autocomplete::college_autocomplete;
 use crate::utils::config::{ADMIN_ROLE_ID, REMOVE_ROLE_ID};
 use crate::{Context, Error};
-use log::error;
 use poise::serenity_prelude::{EditMember, Mentionable, RoleId};
 use regex::Regex;
 use serde_json::json;
@@ -150,7 +149,7 @@ pub async fn enroll(
     let user_data: User = serde_json::from_value(user_data_json).unwrap();
 
     // Try to save the user data on a JSON file
-    if let Err(e) = save_to_json(&user_data) {
+    if save_to_json(&user_data).is_err() {
         // Log any errors that happened during saving
         let error_format = format!(
             "Hi {}, Something has gone wrong. The people with {} will get you set up to earn points!",
