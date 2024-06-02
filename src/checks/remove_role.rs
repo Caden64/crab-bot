@@ -1,12 +1,12 @@
-use crate::{Context, Error, GUILD_ID, REMOVE_ROLE_ID};
+use crate::{Context, Error, REMOVE_ROLE_ID};
 
-// makes sure the user has the remove role TODO check if they have other roles and return false if so
+// makes sure the user has the remove role 
 pub async fn remove_role(ctx: Context<'_>) -> Result<bool, Error> {
     if ctx
         .author()
         .has_role(
             &ctx.http(),
-            *ctx.data().config_data.guild.get(GUILD_ID).unwrap(),
+            ctx.data().config_data.guild.main.GUILD_ID,
             *ctx.data()
                 .config_data
                 .roles

@@ -24,7 +24,7 @@ pub const MEETING_CHANNEL: &str = "MEETING_CHANNEL_ID";
 #[derive(Debug, Deserialize, Clone)]
 pub struct ConfigData {
     pub token: HashMap<String, String>,
-    pub guild: HashMap<String, u64>,
+    pub guild: Guild,
     pub roles: Roles,
     pub channels: HashMap<String, u64>,
     pub features: HashMap<String, bool>,
@@ -34,6 +34,25 @@ pub struct ConfigData {
 pub struct Roles {
     pub public: HashMap<String, u64>,
     pub private: HashMap<String, u64>,
+}
+
+
+#[derive(Debug, Deserialize, Clone)]
+pub struct Guild {
+    pub main: GuildMain,
+    pub partners: HashMap<String, GuildPartners>
+}
+
+#[derive(Debug, Deserialize, Clone)]
+pub struct GuildMain {
+    pub GUILD_ID: u64,
+    pub PRESIDENT: u64
+}
+
+#[derive(Debug, Deserialize, Clone)]
+pub struct GuildPartners {
+    pub ID: u64,
+    pub NAME: String
 }
 
 // read and return result of the config file

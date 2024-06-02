@@ -1,9 +1,11 @@
-use crate::utils::config::{MEETING_CHANNEL, PRESIDENT};
-use crate::{Data, Error};
+use std::sync::atomic::Ordering;
+
 use poise::serenity_prelude as serenity;
 use poise::serenity_prelude::CacheHttp;
 use poise::serenity_prelude::FullEvent::{GuildMemberAddition, Message, Ready, VoiceStateUpdate};
-use std::sync::atomic::Ordering;
+
+use crate::{Data, Error};
+use crate::utils::config::MEETING_CHANNEL;
 
 pub async fn event_handler(
     ctx: &serenity::Context,
@@ -26,18 +28,18 @@ pub async fn event_handler(
             if let Some(new_member) = new.member.as_ref() {
                 if old.is_none() {
                     if let Some(new_channel_id) = new.channel_id.as_ref() {
-                        if let (Some(meeting_channel), Some(president)) = (
+                        if let (Some(meeting_channel), president) = (
                             // Load configuration data
                             framework
                                 .user_data
                                 .config_data
                                 .channels
                                 .get(MEETING_CHANNEL),
-                            framework.user_data.config_data.guild.get(PRESIDENT),
+                            framework.user_data.config_data.guild.main.PRESIDENT,
                         ) {
-                            // If the member is the president and they joined the meeting channel
+                            // If the member is the president, and they joined the meeting channel
                             if new_channel_id.get() == *meeting_channel
-                                && new_member.user.id.get() == *president
+                                && new_member.user.id.get() == president
                             {
                                 let mem_display_name = new_member.display_name();
                                 // Fetch all channels from guild
@@ -77,18 +79,18 @@ pub async fn event_handler(
                     if new.channel_id.is_none() && old_state.member.is_some() {
                         // The channel that the member left
                         if let Some(old_channel_id) = old_state.channel_id {
-                            if let (Some(meeting_channel), Some(president)) = (
+                            if let (Some(meeting_channel), president) = (
                                 // Load configuration data
                                 framework
                                     .user_data
                                     .config_data
                                     .channels
                                     .get(MEETING_CHANNEL),
-                                framework.user_data.config_data.guild.get(PRESIDENT),
+                                framework.user_data.config_data.guild.main.PRESIDENT,
                             ) {
-                                // If the member is the president and they left the meeting channel
+                                // If the member is the president, and they left the meeting channel
                                 if old_channel_id.get() == *meeting_channel
-                                    && old_state.user_id.get() == *president
+                                    && old_state.user_id.get() == president
                                 {
                                     let mem = old_state.member.clone().unwrap();
                                     // Notify that the meeting has ended
@@ -113,7 +115,9 @@ pub async fn event_handler(
             }
         }
         // Fallback for other types of event
-        Message { .. } => {}
+        Message { new_message } => {
+            // new_message.channel_id
+        }
         _ => {}
     }
     Ok(())
