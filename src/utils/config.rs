@@ -36,17 +36,16 @@ pub struct Roles {
     pub private: HashMap<String, u64>,
 }
 
-
 #[derive(Debug, Deserialize, Clone)]
 pub struct Guild {
     pub main: GuildMain,
-    pub partners: HashMap<String, GuildPartners>
+    pub partners: HashMap<String, GuildPartners>,
 }
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct GuildMain {
     pub GUILD_ID: u64,
-    pub PRESIDENT: u64
+    pub PRESIDENT: u64,
 }
 
 #[derive(Debug, Deserialize, Clone)]
@@ -54,7 +53,7 @@ pub struct GuildPartners {
     pub ID: u64,
     pub NAME: String,
     pub SEND_NEWS: bool,
-    pub NEWS_CHANNEL: u64
+    pub NEWS_CHANNEL: u64,
 }
 
 // read and return result of the config file

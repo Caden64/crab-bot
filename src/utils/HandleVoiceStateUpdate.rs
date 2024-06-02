@@ -1,11 +1,17 @@
-use std::sync::atomic::Ordering;
-use poise::serenity_prelude::{CacheHttp, VoiceState};
-use poise::serenity_prelude as serenity;
-use crate::{Data, Error};
 use crate::utils::config::MEETING_CHANNEL;
+use crate::{Data, Error};
+use poise::serenity_prelude as serenity;
+use poise::serenity_prelude::{CacheHttp, VoiceState};
+use std::sync::atomic::Ordering;
 
 // If member entered a voice channel
-pub async fn handle_voice_state_update(new: &VoiceState, old: &Option<VoiceState>, ctx: &serenity::Context, framework: poise::FrameworkContext<'_, Data, Error>, data: &Data) {
+pub async fn handle_voice_state_update(
+    new: &VoiceState,
+    old: &Option<VoiceState>,
+    ctx: &serenity::Context,
+    framework: poise::FrameworkContext<'_, Data, Error>,
+    data: &Data,
+) {
     if let Some(new_member) = new.member.as_ref() {
         if old.is_none() {
             if let Some(new_channel_id) = new.channel_id.as_ref() {
@@ -24,14 +30,12 @@ pub async fn handle_voice_state_update(new: &VoiceState, old: &Option<VoiceState
                     {
                         let mem_display_name = new_member.display_name();
                         // Fetch all channels from guild
-                        if let Ok(channels) =
-                            new.guild_id.unwrap().channels(ctx.http.http()).await
+                        if let Ok(channels) = new.guild_id.unwrap().channels(ctx.http.http()).await
                         {
                             // If the meeting channel exists
                             if let Some(new_channel) = channels.get(new_channel_id) {
                                 // Fetch all members from the channel
-                                if let Ok(members) =
-                                    new_channel.members(ctx.cache.clone().as_ref())
+                                if let Ok(members) = new_channel.members(ctx.cache.clone().as_ref())
                                 {
                                     // Fetch all members who aren't the president
                                     for member in members {
@@ -45,7 +49,8 @@ pub async fn handle_voice_state_update(new: &VoiceState, old: &Option<VoiceState
                                     // Notify that the meeting has started
                                     println!(
                                         "President: {} joined meeting voice. Meeting has started",
-                                        mem_display_name);
+                                        mem_display_name
+                                    );
                                     // Set meeting time flag to true
                                     data.meeting_time.store(true, Ordering::SeqCst)
                                 }

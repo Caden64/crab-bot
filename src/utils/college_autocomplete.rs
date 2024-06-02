@@ -13,7 +13,7 @@ pub async fn college_autocomplete<'a>(
         .roles
         .public
         .iter()
-        .map(|v| v.0.to_string()) 
+        .map(|v| v.0.to_string())
         .collect::<Vec<String>>();
     futures::stream::iter(roles)
         .filter(move |name| future::ready(name.starts_with(partial)))

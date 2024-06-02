@@ -1,6 +1,6 @@
 use crate::{Context, Error, REMOVE_ROLE_ID};
 
-// makes sure the user has the remove role 
+// makes sure the user has the remove role
 pub async fn remove_role(ctx: Context<'_>) -> Result<bool, Error> {
     if ctx
         .author()

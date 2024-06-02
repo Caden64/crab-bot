@@ -1,9 +1,9 @@
-use std::collections::HashMap;
-use std::fs;
 use crate::storage::database_storage::save_to_json;
 use crate::storage::user::User;
+use std::collections::HashMap;
+use std::fs;
 
-pub fn add_user_points(user_id: &u64, points: u16) -> Option<()>{
+pub fn add_user_points(user_id: &u64, points: u16) -> Option<()> {
     let mut enrollments: HashMap<u64, User> = HashMap::new();
 
     // Load existing data
@@ -12,7 +12,7 @@ pub fn add_user_points(user_id: &u64, points: u16) -> Option<()>{
         if let Ok(user_enrollments_result) = user_enrollments_result {
             enrollments = user_enrollments_result
         } else {
-            return None
+            return None;
         }
     }
 
@@ -20,7 +20,7 @@ pub fn add_user_points(user_id: &u64, points: u16) -> Option<()>{
         let mut user = user.clone();
         user.points += points as i64;
         if save_to_json(&user).is_err() {
-            return None
+            return None;
         }
     }
 
@@ -28,7 +28,6 @@ pub fn add_user_points(user_id: &u64, points: u16) -> Option<()>{
 }
 
 pub fn remove_user_points(user_id: &u64, points: u16) -> Option<()> {
-
     let mut enrollments: HashMap<u64, User> = HashMap::new();
 
     // Load existing data
@@ -37,7 +36,7 @@ pub fn remove_user_points(user_id: &u64, points: u16) -> Option<()> {
         if let Ok(user_enrollments_result) = user_enrollments_result {
             enrollments = user_enrollments_result
         } else {
-            return None
+            return None;
         }
     }
 
@@ -45,7 +44,7 @@ pub fn remove_user_points(user_id: &u64, points: u16) -> Option<()> {
         let mut user = user.clone();
         user.points -= points as i64;
         if save_to_json(&user).is_err() {
-            return None
+            return None;
         }
     }
 
