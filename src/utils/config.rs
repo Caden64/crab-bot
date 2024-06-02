@@ -52,7 +52,9 @@ pub struct GuildMain {
 #[derive(Debug, Deserialize, Clone)]
 pub struct GuildPartners {
     pub ID: u64,
-    pub NAME: String
+    pub NAME: String,
+    pub SEND_NEWS: bool,
+    pub NEWS_CHANNEL: u64
 }
 
 // read and return result of the config file
