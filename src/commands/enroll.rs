@@ -4,10 +4,10 @@ use crate::storage::database_storage::save_to_json;
 use crate::storage::user::User;
 use crate::utils::college_autocomplete::college_autocomplete;
 use crate::utils::config::{ADMIN_ROLE_ID, REMOVE_ROLE_ID};
-use crate::{storage, Context, Error};
+use crate::{Context, Error};
 use log::error;
-use poise::serenity_prelude::{CreateMessage, EditMember, Mentionable, RoleId};
-use poise::CreateReply;
+use poise::serenity_prelude::{EditMember, Mentionable, RoleId};
+use regex::Regex;
 use serde_json::json;
 
 #[poise::command(
@@ -29,6 +29,11 @@ pub async fn enroll(
     // Ensure the name input contains more than one word
     if name.split_whitespace().count() == 0 {
         ctx.reply("Need a last initial included").await?;
+        return Ok(());
+    }
+    let email_regex = Regex::new("(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])").unwrap();
+    if !email_regex.is_match(&email) {
+        ctx.reply("Invalid email format").await?;
         return Ok(());
     }
 
@@ -147,7 +152,26 @@ pub async fn enroll(
     // Try to save the user data on a JSON file
     if let Err(e) = save_to_json(&user_data) {
         // Log any errors that happened during saving
-        error!("Error saving to json {:?}", e)
+        let error_format = format!(
+            "Hi {}, Something has gone wrong. The people with {} will get you set up to earn points!",
+            ctx.author_member().await.unwrap().mention(),
+            guild_id
+                .unwrap()
+                .roles(&ctx.http())
+                .await
+                .unwrap()
+                .get(&RoleId::new(
+                    *ctx.data()
+                        .config_data
+                        .roles
+                        .private
+                        .get(ADMIN_ROLE_ID)
+                        .unwrap()
+                ))
+                .unwrap()
+                .mention()
+        );
+        ctx.reply(error_format).await?;
     }
     Ok(())
 }

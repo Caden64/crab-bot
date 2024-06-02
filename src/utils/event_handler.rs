@@ -1,9 +1,10 @@
 use poise::serenity_prelude as serenity;
 use poise::serenity_prelude::FullEvent::{GuildMemberAddition, Message, Ready, VoiceStateUpdate};
-use poise::serenity_prelude::{CacheHttp, CreateMessage, Mentionable};
+use poise::serenity_prelude::{CacheHttp, CreateMessage, GuildId, Mentionable};
 
 use crate::utils::HandleVoiceStateUpdate::handle_voice_state_update;
 use crate::{Data, Error};
+use crate::utils::config::READING_CHANNEL;
 
 pub async fn event_handler(
     ctx: &serenity::Context,
@@ -20,7 +21,7 @@ pub async fn event_handler(
         // New member joined the server
         GuildMemberAddition { new_member, .. } => {
             let gd = new_member.guild_id.get();
-            if data.config_data.guild.main.GUILD_ID == gd {
+            if data.config_data.guild.main.guild_id == gd {
                 let join_message = CreateMessage::new().content(format!(
                     "Welcome to {}, {}! Thanks for joining us! 🎉",
                     ctx.http().get_guild(new_member.guild_id).await?.name,
@@ -44,7 +45,9 @@ pub async fn event_handler(
         }
         // Fallback for other types of event
         Message { new_message } => {
-            // new_message.channel_id
+            if new_message.channel_id == *data.config_data.channels.get(READING_CHANNEL).unwrap() {
+                
+            }
         }
         _ => {}
     }

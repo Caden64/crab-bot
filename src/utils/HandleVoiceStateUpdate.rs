@@ -22,7 +22,7 @@ pub async fn handle_voice_state_update(
                         .config_data
                         .channels
                         .get(MEETING_CHANNEL),
-                    framework.user_data.config_data.guild.main.PRESIDENT,
+                    framework.user_data.config_data.guild.main.president,
                 ) {
                     // If the member is the president, and they joined the meeting channel
                     if new_channel_id.get() == *meeting_channel
@@ -72,7 +72,7 @@ pub async fn handle_voice_state_update(
                             .config_data
                             .channels
                             .get(MEETING_CHANNEL),
-                        framework.user_data.config_data.guild.main.PRESIDENT,
+                        framework.user_data.config_data.guild.main.president,
                     ) {
                         // If the member is the president, and they left the meeting channel
                         if old_channel_id.get() == *meeting_channel

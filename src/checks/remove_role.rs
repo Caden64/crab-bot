@@ -6,7 +6,7 @@ pub async fn remove_role(ctx: Context<'_>) -> Result<bool, Error> {
         .author()
         .has_role(
             &ctx.http(),
-            ctx.data().config_data.guild.main.GUILD_ID,
+            ctx.data().config_data.guild.main.guild_id,
             *ctx.data()
                 .config_data
                 .roles

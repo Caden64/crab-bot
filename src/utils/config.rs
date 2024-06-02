@@ -16,44 +16,59 @@ pub const ADMIN_ROLE_ID: &str = "ADMIN_ROLE_ID";
 // channels
 // pub const DESTIN_CHANNEL: &str = "DESTIN_CHANNEL_ID";
 pub const ENROLL_CHANNEL: &str = "ENROLL_CHANNEL_ID";
-// pub const READING_CHANNEL: &str = "READING_CHANNEL_ID";
+pub const READING_CHANNEL: &str = "READING_CHANNEL_ID";
 // pub const LOGGING_CHANNEL: &str = "LOGGING_CHANNEL_ID";
 pub const MEETING_CHANNEL: &str = "MEETING_CHANNEL_ID";
 
 // config file types
 #[derive(Debug, Deserialize, Clone)]
 pub struct ConfigData {
+    #[serde(alias="TOKEN")]
     pub token: HashMap<String, String>,
+    #[serde(alias="GUILD")]
     pub guild: Guild,
+    #[serde(alias="ROLES")]
     pub roles: Roles,
+    #[serde(alias="CHANNELS")]
     pub channels: HashMap<String, u64>,
+    #[serde(alias="FEATURES")]
     pub features: HashMap<String, bool>,
 }
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct Roles {
+    #[serde(alias="PUBLIC")]
     pub public: HashMap<String, u64>,
+    #[serde(alias="PRIVATE")]
     pub private: HashMap<String, u64>,
 }
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct Guild {
+    #[serde(alias="MAIN")]
     pub main: GuildMain,
+    #[serde(alias="PARTNERS")]
     pub partners: HashMap<String, GuildPartners>,
 }
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct GuildMain {
-    pub GUILD_ID: u64,
-    pub PRESIDENT: u64,
+    #[serde(alias="GUILD_ID")]
+    pub guild_id: u64,
+    #[serde(alias="PRESIDENT")]
+    pub president: u64,
 }
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct GuildPartners {
-    pub ID: u64,
-    pub NAME: String,
-    pub SEND_NEWS: bool,
-    pub NEWS_CHANNEL: u64,
+    #[serde(alias="ID")]
+    pub id: u64,
+    #[serde(alias="NAME")]
+    pub name: String,
+    #[serde(alias="SEND_NEWS")]
+    pub send_news: bool,
+    #[serde(alias="NEWS_CHANNEL")]
+    pub news_channel: u64,
 }
 
 // read and return result of the config file
