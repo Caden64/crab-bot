@@ -10,5 +10,5 @@ pub struct User {
     pub email: String,
     pub interests: String,
     pub email_distro: bool,
-    pub points: u64,
+    pub points: i64,
 }

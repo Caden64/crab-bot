@@ -4,7 +4,7 @@ use poise::serenity_prelude::{CreateMessage, EditMember, Mentionable};
 use poise::{serenity_prelude as serenity, CreateReply};
 
 #[poise::command(slash_command, ephemeral)]
-pub async fn acknowledgement(ctx: Context<'_>) -> Result<(), Error> {
+pub async fn acknowledge(ctx: Context<'_>) -> Result<(), Error> {
     if ctx
         .guild_id()
         .unwrap()
@@ -78,7 +78,7 @@ pub async fn acknowledgement(ctx: Context<'_>) -> Result<(), Error> {
     Ok(())
 }
 #[poise::command(slash_command)]
-pub async fn admin_acknowledgement(ctx: Context<'_>) -> Result<(), Error> {
+pub async fn admin_acknowledge(ctx: Context<'_>) -> Result<(), Error> {
     let ctx_uuid = "Acknowledgement";
 
     // Prepare and send a reply with an "Acknowledge" button

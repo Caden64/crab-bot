@@ -3,7 +3,7 @@ mod commands;
 mod storage;
 mod utils;
 
-use crate::commands::acknowledgement::{acknowledgement, admin_acknowledgement};
+use crate::commands::acknowledgement::{acknowledge, admin_acknowledge};
 use crate::commands::enroll::enroll;
 use crate::commands::help::help;
 use crate::commands::ping::ping;
@@ -15,6 +15,7 @@ use serde::Deserialize;
 use std::default::Default;
 use std::sync::atomic::AtomicBool;
 use crate::commands::award::award;
+use crate::commands::remove_points::remove_points;
 
 // define types for bot use
 #[derive(Debug, Deserialize)]
@@ -64,9 +65,10 @@ async fn main() {
                 enroll(),
                 register_commands(),
                 help(),
-                acknowledgement(),
-                admin_acknowledgement(),
+                acknowledge(),
+                admin_acknowledge(),
                 award(),
+                remove_points(),
             ],
             // Handler for other events
             event_handler: |ctx, event, framework, data| {
