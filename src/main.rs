@@ -10,7 +10,7 @@ use crate::commands::help::help;
 use crate::commands::ping::ping;
 use crate::commands::register_commands::register_commands;
 use crate::commands::remove_points::remove_points;
-use crate::utils::config::{get_config, ConfigData, DISCORD_TOKEN, GUILD_ID, REMOVE_ROLE_ID};
+use crate::utils::config::{get_config, ConfigData, DISCORD_TOKEN,  REMOVE_ROLE_ID};
 use crate::utils::event_handler::event_handler;
 use poise::serenity_prelude as serenity;
 use serde::Deserialize;
