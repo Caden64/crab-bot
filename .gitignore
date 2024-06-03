@@ -3,5 +3,7 @@
 .env
 Secrets*.toml
 Cargo.lock
-enrollments*.json
+enrollments.json
 config.toml
+.vscode
+.idea

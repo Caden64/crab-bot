@@ -1,0 +1,14 @@
+services:
+  crab-bot:
+    build:
+      context: .
+    volumes:
+      - ./data:/
+    networks:
+      - internet
+    restart: always
+
+networks:
+  internet:
+    driver: "bridge"
+    

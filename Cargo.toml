@@ -1,16 +1,16 @@
 [package]
-name = "mlc_crab_bot"
-version = "1.0.0"
+name = "crab_bot"
+version = "2.0.0"
 edition = "2021"
+license = "GPL-3"
+authors = ["Caden64", "Topazstix"]
 
 [dependencies]
-serenity = { version = "0.11.5", default-features = false, features = ["client", "gateway", "rustls_backend", "model"] }
-tokio = { version = "1.26.0", features = ["macros", "rt-multi-thread"] }
-regex = "1.7.0"
-dotenv = "0.15.0"
-tracing = "0.1.37"
-serde = "1.0.188"
-serde_json = "1.0.105"
-google-sheets4 = "5.0.3+20230119"
-toml = "0.8.9"
-serde_derive = "1.0.196"
+futures = "0.3.30"
+poise = "0.6.1"
+serde = "1.0.200"
+tokio = { version = "1.37.0", features = ["rt-multi-thread"] }
+toml = "0.8.12"
+log = "0.4.21"
+serde_json = "1.0.117"
+regex = "1.10.4"
