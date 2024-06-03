@@ -6,8 +6,8 @@ use std::collections::HashMap;
 // token
 pub const DISCORD_TOKEN: &str = "discord_token";
 // guild
-pub const GUILD_ID: &str = "GUILD_ID";
-pub const PRESIDENT: &str = "PRESIDENT";
+// pub const GUILD_ID: &str = "GUILD_ID";
+// pub const PRESIDENT: &str = "PRESIDENT";
 // roles.private
 pub const REMOVE_ROLE_ID: &str = "REMOVE_ROLE_ID";
 pub const ADMIN_ROLE_ID: &str = "ADMIN_ROLE_ID";
@@ -23,51 +23,51 @@ pub const MEETING_CHANNEL: &str = "MEETING_CHANNEL_ID";
 // config file types
 #[derive(Debug, Deserialize, Clone)]
 pub struct ConfigData {
-    #[serde(alias="TOKEN")]
+    #[serde(alias = "TOKEN")]
     pub token: HashMap<String, String>,
-    #[serde(alias="GUILD")]
+    #[serde(alias = "GUILD")]
     pub guild: Guild,
-    #[serde(alias="ROLES")]
+    #[serde(alias = "ROLES")]
     pub roles: Roles,
-    #[serde(alias="CHANNELS")]
+    #[serde(alias = "CHANNELS")]
     pub channels: HashMap<String, u64>,
-    #[serde(alias="FEATURES")]
+    #[serde(alias = "FEATURES")]
     pub features: HashMap<String, bool>,
 }
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct Roles {
-    #[serde(alias="PUBLIC")]
+    #[serde(alias = "PUBLIC")]
     pub public: HashMap<String, u64>,
-    #[serde(alias="PRIVATE")]
+    #[serde(alias = "PRIVATE")]
     pub private: HashMap<String, u64>,
 }
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct Guild {
-    #[serde(alias="MAIN")]
+    #[serde(alias = "MAIN")]
     pub main: GuildMain,
-    #[serde(alias="PARTNERS")]
+    #[serde(alias = "PARTNERS")]
     pub partners: HashMap<String, GuildPartners>,
 }
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct GuildMain {
-    #[serde(alias="GUILD_ID")]
+    #[serde(alias = "GUILD_ID")]
     pub guild_id: u64,
-    #[serde(alias="PRESIDENT")]
+    #[serde(alias = "PRESIDENT")]
     pub president: u64,
 }
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct GuildPartners {
-    #[serde(alias="ID")]
+    #[serde(alias = "ID")]
     pub id: u64,
-    #[serde(alias="NAME")]
+    #[serde(alias = "NAME")]
     pub name: String,
-    #[serde(alias="SEND_NEWS")]
+    #[serde(alias = "SEND_NEWS")]
     pub send_news: bool,
-    #[serde(alias="NEWS_CHANNEL")]
+    #[serde(alias = "NEWS_CHANNEL")]
     pub news_channel: u64,
 }
 
