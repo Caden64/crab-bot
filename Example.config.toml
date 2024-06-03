@@ -1,17 +1,36 @@
-[token]
-discord_token = ""
-[guild]
-GUILD_ID = 1
-PRESIDENT = 1
-[roles.public]
+[TOKEN]
+discord_token ="DISCORD TOKEN HERE"
+
+[GUILD.MAIN]
+GUILD_ID = 1 # the home server of the bot
+PRESIDENT = 1 # who ever is in change of the bot
+
+[GUILD.PARTNERS.a name or something]
+id = 1
+name = "Name of partner"
+SEND_NEWS = true # whether the "partner" want's to receive the news posted or not
+NEWS_CHANNEL = 1
+
+[ROLES.PUBLIC]
+# The supported roles id's that can be given to users
 ROLE1 = 1
-ROLE2 = 2
-ROLE3 = 3
-OTHER = 4
-[roles.private]
-PRIVATE_ROLE_ID_1 = 1
-PRIVATE_ROLE_ID_2 = 1
-[channels]
+ROLE2 = 1
+other = 1
+
+[ROLES.PRIVATE]
+# the default role given when a user accepts the rules
+REMOVE_ROLE_ID = 1
+# the role who should be notified if something goes wrong in registration (caused by user having higher permission than the bot or already existing in enrollments.json)
+ADMIN_ROLE_ID = 1
+
+[CHANNELS]
+# Channel where user will enroll
 ENROLL_CHANNEL_ID = 1
+# A voice channel where the meetings happen
 MEETING_CHANNEL_ID = 1
-[features]
+# where the news urls are posted to be shared 
+READING_CHANNEL_ID = 1
+
+# currently not used and can be removed
+[FEATURES]
+SEND_NEWS = true
