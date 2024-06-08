@@ -12,6 +12,7 @@ pub fn add_user_points(user_id: &u64, points: u16) -> Option<()> {
         if let Ok(user_enrollments_result) = user_enrollments_result {
             enrollments = user_enrollments_result
         } else {
+            println!("Unable to read user registration file");
             return None;
         }
     }
@@ -20,6 +21,7 @@ pub fn add_user_points(user_id: &u64, points: u16) -> Option<()> {
         let mut user = user.clone();
         user.points += points as i64;
         if save_to_json(&user).is_err() {
+            println!("Unable to save user registration file");
             return None;
         }
     }

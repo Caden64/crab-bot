@@ -1,14 +1,11 @@
 use poise::serenity_prelude as serenity;
-use poise::serenity_prelude::{
-    CacheHttp, ChannelId, CreateMessage
-    , Mentionable,
-};
 use poise::serenity_prelude::FullEvent::{GuildMemberAddition, Message, Ready, VoiceStateUpdate};
+use poise::serenity_prelude::{CacheHttp, ChannelId, CreateMessage, Mentionable};
 use regex::Regex;
 
-use crate::{Data, Error};
 use crate::utils::config::READING_CHANNEL;
 use crate::utils::handle_voice_state_update::handle_voice_state_update;
+use crate::{Data, Error};
 
 pub async fn event_handler(
     ctx: &serenity::Context,
