@@ -1,7 +1,7 @@
 use futures::{future, Stream, StreamExt};
 
-use crate::Context;
 use crate::utils::roles::roles;
+use crate::Context;
 
 // Gets the roles from the config and returns them
 pub async fn role_autocomplete<'a>(

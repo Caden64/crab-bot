@@ -1,5 +1,5 @@
 use crate::checks::admin_role::admin_role;
-use crate::storage::edit_database::remove_user_points;
+use crate::storage::remove_user_points::remove_user_points;
 use crate::{Context, Error};
 use poise::serenity_prelude::User;
 

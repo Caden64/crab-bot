@@ -1,5 +1,5 @@
 use crate::checks::admin_role::admin_role;
-use crate::storage::edit_database::add_user_points;
+use crate::storage::add_user_points::add_user_points;
 use crate::{Context, Error};
 use poise::serenity_prelude::User;
 
