@@ -1,6 +1,6 @@
 use crate::checks::enroll_channel::enroll_channel;
 use crate::checks::remove_role::remove_role;
-use crate::storage::database_storage::save_to_json;
+use crate::storage::save_user::save_to_json;
 use crate::storage::user::User;
 use crate::utils::config::{ADMIN_ROLE_ID, REMOVE_ROLE_ID};
 use crate::utils::role_autocomplete::role_autocomplete;
@@ -20,9 +20,9 @@ pub async fn enroll(
     #[description = "First and at least last initial"] name: String,
     #[description = "Your student email"] email: String,
     #[description = "Why are you interested in cyber club"] interests: String,
-    #[autocomplete = "college_autocomplete"]
-    #[description = "What college do you go to"]
-    university: String,
+    #[autocomplete = "role_autocomplete"]
+    #[description = "What role best describes you"]
+    role: String,
     #[description = "Would you like to occasionally receive emails"] email_distro: Option<bool>,
 ) -> Result<(), Error> {
     // Ensure the name input contains more than one word
@@ -53,13 +53,13 @@ pub async fn enroll(
         .config_data
         .roles
         .public
-        .contains_key(&university)
+        .contains_key(&role)
     {
         ctx.reply("Unknown university selected please try again")
             .await?;
         return Ok(());
     }
-    let uni_role = ctx.data().config_data.roles.public.get(&university);
+    let uni_role = ctx.data().config_data.roles.public.get(&role);
     if uni_role.is_none() {
         ctx.reply("INVALID UNIVERSITY").await?;
         return Ok(());
@@ -131,14 +131,14 @@ pub async fn enroll(
     };
 
     // Everything went fine, let's notify the user
-    ctx.reply(format!("You have registered as:\nName: {} {}\nEmail: {}\nInterests: {}\nUniversity: {}\nAdd to Email Distro: {}", first, last_initial, email, interests, university, email_distro)).await?;
+    ctx.reply(format!("You have registered as:\nName: {} {}\nEmail: {}\nInterests: {}\nUniversity: {}\nAdd to Email Distro: {}", first, last_initial, email, interests, role, email_distro)).await?;
 
     // Prepare the user data as JSON
     let user_data_json = json!({
         "user_id": ctx.author().id.get(),
         "user_name": ctx.author().name,
         "name": format!("{} {}", first, last_initial),
-        "university": university,
+        "university": role,
         "email": email,
         "interests": interests,
         "email_distro": email_distro,

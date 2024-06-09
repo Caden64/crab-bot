@@ -1,4 +1,4 @@
-use crate::storage::database_storage::save_to_json;
+use crate::storage::save_user::save_to_json;
 use crate::storage::user::User;
 use std::collections::HashMap;
 use std::fs;

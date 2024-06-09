@@ -6,9 +6,17 @@ pub struct User {
     pub user_id: u64,
     pub user_name: String,
     pub name: String,
-    pub university: String,
+    pub role: String,
     pub email: String,
     pub interests: String,
     pub email_distro: bool,
     pub points: i64,
+}
+
+#[derive(Deserialize, Serialize, Debug, Clone)]
+pub struct EditableUser {
+    pub name: String,
+    pub role: String,
+    pub email: String,
+    pub email_distro: bool
 }
