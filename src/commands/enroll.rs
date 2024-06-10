@@ -48,13 +48,7 @@ pub async fn enroll(
     let email_distro = email_distro.unwrap_or_default();
 
     // Check if the university name exists in the public roles
-    if !ctx
-        .data()
-        .config_data
-        .roles
-        .public
-        .contains_key(&role)
-    {
+    if !ctx.data().config_data.roles.public.contains_key(&role) {
         ctx.reply("Unknown university selected please try again")
             .await?;
         return Ok(());

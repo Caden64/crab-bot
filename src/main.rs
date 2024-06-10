@@ -5,6 +5,7 @@ mod utils;
 
 use crate::commands::acknowledgement::{acknowledge, admin_acknowledge};
 use crate::commands::award::award;
+use crate::commands::edit_user::edit_user;
 use crate::commands::enroll::enroll;
 use crate::commands::help::help;
 use crate::commands::ping::ping;
@@ -69,6 +70,7 @@ async fn main() {
                 admin_acknowledge(),
                 award(),
                 remove_points(),
+                edit_user(),
             ],
             // Handler for other events
             event_handler: |ctx, event, framework, data| {

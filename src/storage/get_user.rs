@@ -1,6 +1,6 @@
+use crate::storage::user::User;
 use std::collections::HashMap;
 use std::fs;
-use crate::storage::user::User;
 
 pub fn get_user(user_id: &u64) -> Option<User> {
     let mut enrollments: HashMap<u64, User> = HashMap::new();
@@ -18,9 +18,9 @@ pub fn get_user(user_id: &u64) -> Option<User> {
 
     // edit existing data
     if let Some(user) = enrollments.get(user_id) {
-        return Some(user.clone())
+        return Some(user.clone());
     }
-    
+
     println!("User did not exist");
     None
 }
