@@ -3,7 +3,7 @@ mod commands;
 mod storage;
 mod utils;
 
-use crate::commands::acknowledgement::{acknowledge, admin_acknowledge};
+use crate::commands::acknowledgement::acknowledge;
 use crate::commands::award::award;
 use crate::commands::edit_user::edit_user;
 use crate::commands::enroll::enroll;
@@ -67,7 +67,6 @@ async fn main() {
                 register_commands(),
                 help(),
                 acknowledge(),
-                admin_acknowledge(),
                 award(),
                 remove_points(),
                 edit_user(),
