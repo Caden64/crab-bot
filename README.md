@@ -58,3 +58,91 @@ cargo build --release
 docker build --tag 'crab-bot-v2' .
 docker run --detach 'crab-bot-v2'
 ```
+
+## For future use
+
+```rust
+use std::sync::Arc;
+use std::time::{Duration, SystemTime};
+use chrono_tz::America::Denver;
+use clokwerk::{AsyncScheduler, TimeUnits};
+use poise::serenity_prelude as serenity;
+use poise::serenity_prelude::{CacheHttp, ChannelId, Http};
+
+struct Data {} // User data, which is stored and accessible in all command invocations
+type Error = Box<dyn std::error::Error + Send + Sync>;
+type Context<'a> = poise::Context<'a, Data, Error>;
+
+/// Displays your or another user's account creation date
+#[poise::command(slash_command)]
+async fn ping(
+    ctx: Context<'_>,
+) -> Result<(), Error> {
+    let response = "I work!";
+    ctx.say(response).await?;
+    Ok(())
+}
+
+#[poise::command(slash_command, ephemeral)]
+async fn one_min(
+    ctx: Context<'_>,
+) -> Result<(), Error> {
+    ctx.reply("this is just so discord does not get mad!").await?;
+    let now = SystemTime::now();
+    let http = &ctx.serenity_context().http;
+    println!("before waiting");
+    // needs to say something so discord works properly
+    run_one_min(Arc::clone(http)).await;
+    println!("out of waiting");
+    println!("time diff in seconds {}", now.elapsed().unwrap().as_secs());
+    Ok(())
+}
+
+async fn run_one_min(http: Arc<Http>) -> tokio::task::JoinHandle<()>{
+    println!("Going to run every ten sec");
+    let mut sched = AsyncScheduler::with_tz(Denver);
+    let http = Arc::clone(&http);
+    sched.every(10.second()).run(move || {
+        send_msg(http.clone())
+    });
+    tokio::spawn(async move {
+        loop {
+            sched.run_pending().await;
+            tokio::time::sleep(Duration::from_secs(1)).await;
+            println!("wait ten seconds has been done");
+        }
+    })
+}
+
+async fn send_msg(cache_http: impl CacheHttp) {
+    // channel bot to speak in here
+    let z: ChannelId = ChannelId::new(1);
+    z.say(cache_http.http(), "wow").await.expect("Should have worked");
+
+}
+
+
+#[tokio::main]
+async fn main() {
+    let token = "DISCORD TOKEN HERE";
+    let intents = serenity::GatewayIntents::non_privileged();
+
+    let framework = poise::Framework::builder()
+        .options(poise::FrameworkOptions {
+            commands: vec![ping(), one_min()],
+            ..Default::default()
+        })
+        .setup(|ctx, _ready, framework| {
+            Box::pin(async move {
+                poise::builtins::register_globally(ctx, &framework.options().commands).await?;
+                Ok(Data {})
+            })
+        })
+        .build();
+
+    let client = serenity::ClientBuilder::new(token, intents)
+        .framework(framework)
+        .await;
+    client.unwrap().start().await.unwrap();
+}
+```
