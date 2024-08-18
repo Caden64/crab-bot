@@ -9,7 +9,7 @@ use crate::storage::save_user::save_to_json;
 pub async fn edit_user(ctx: Context<'_>) -> Result<(), Error> {
     if let Some(user) = get_user(&ctx.author().id.get()) {
         let ctx_uuid = ctx.id();
-        let mut editableUser = user.clone();
+        let mut editable_user = user.clone();
         // Prepare and send a reply with an "Acknowledge" button
         let reply = {
             let components = vec![serenity::CreateActionRow::Buttons(vec![
@@ -33,15 +33,15 @@ pub async fn edit_user(ctx: Context<'_>) -> Result<(), Error> {
             let data = poise::execute_modal_on_component_interaction::<EditableUser>(ctx, mci, None, None).await?;
             if let Some(data) = data {
                 if let Some(name) = data.name {
-                    editableUser.name = name
+                    editable_user.name = name
                 }
                 if let Some(email) = data.email {
-                    editableUser.email = email
+                    editable_user.email = email
                 }
                 if let Some(thm_username) = data.thm_username {
-                    editableUser.thm_username = thm_username
+                    editable_user.thm_username = thm_username
                 }
-                if let Err(_) = save_to_json(&editableUser) {
+                if save_to_json(&editable_user).is_err() {
                     ctx.reply("Unable to save changes to json").await?; 
                 } else {
                     ctx.reply("saved changes to json").await?;

@@ -46,6 +46,12 @@ pub async fn event_handler(
         }
         // Fallback for other types of event
         Message { new_message } => {
+            let x = framework.user_data  .config_data.features.get("SEND_NEWS");
+            if let Some(y) = x {
+                if !y {
+                    return Ok(());
+                } 
+            }
             if new_message.channel_id == *data.config_data.channels.get(READING_CHANNEL).unwrap() {
                 let http_match = Regex::new(r"^(https|http|\^\^).*").unwrap();
                 if http_match.is_match(&new_message.content) {

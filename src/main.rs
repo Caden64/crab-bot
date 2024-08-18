@@ -3,14 +3,10 @@ mod commands;
 mod storage;
 mod utils;
 
-use crate::commands::acknowledgement::{acknowledge, admin_acknowledge};
-use crate::commands::award::award;
-use crate::commands::edit_user::edit_user;
+use crate::commands::acknowledgement::acknowledge;
 use crate::commands::enroll::enroll;
 use crate::commands::help::help;
-use crate::commands::ping::ping;
 use crate::commands::register_commands::register_commands;
-use crate::commands::remove_points::remove_points;
 use crate::utils::config::{get_config, ConfigData, DISCORD_TOKEN, REMOVE_ROLE_ID};
 use crate::utils::event_handler::event_handler;
 use poise::serenity_prelude as serenity;
@@ -61,16 +57,16 @@ async fn main() {
                 ..Default::default()
             },
             // Register bot commands
+            // for now only have the basic commands for enrollment
             commands: vec![
-                ping(),
+                // ping(),
                 enroll(),
                 register_commands(),
                 help(),
                 acknowledge(),
-                admin_acknowledge(),
-                award(),
-                remove_points(),
-                edit_user(),
+                // award(),
+                // remove_points(),
+                // edit_user(),
             ],
             // Handler for other events
             event_handler: |ctx, event, framework, data| {

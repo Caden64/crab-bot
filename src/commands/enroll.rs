@@ -132,11 +132,12 @@ pub async fn enroll(
         "user_id": ctx.author().id.get(),
         "user_name": ctx.author().name,
         "name": format!("{} {}", first, last_initial),
-        "university": role,
+        "role": role,
         "email": email,
         "interests": interests,
         "email_distro": email_distro,
         "points": 0,
+        "thm_username": ""
     });
 
     // Convert the JSON to the User struct
