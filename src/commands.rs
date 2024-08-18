@@ -6,3 +6,4 @@ pub mod help;
 pub mod ping;
 pub mod register_commands;
 pub mod remove_points;
+pub mod rss;

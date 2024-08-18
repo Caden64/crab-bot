@@ -13,6 +13,11 @@ use poise::serenity_prelude as serenity;
 use serde::Deserialize;
 use std::default::Default;
 use std::sync::atomic::AtomicBool;
+use crate::commands::award::award;
+use crate::commands::edit_user::edit_user;
+use crate::commands::ping::ping;
+use crate::commands::remove_points::remove_points;
+use crate::commands::rss::rss;
 
 // define types for bot use
 #[derive(Debug, Deserialize)]
@@ -59,14 +64,15 @@ async fn main() {
             // Register bot commands
             // for now only have the basic commands for enrollment
             commands: vec![
-                // ping(),
+                ping(),
                 enroll(),
                 register_commands(),
                 help(),
                 acknowledge(),
-                // award(),
-                // remove_points(),
-                // edit_user(),
+                award(),
+                remove_points(),
+                edit_user(),
+                rss(),
             ],
             // Handler for other events
             event_handler: |ctx, event, framework, data| {

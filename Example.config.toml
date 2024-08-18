@@ -34,3 +34,7 @@ READING_CHANNEL_ID = 1
 # currently not used and can be removed
 [FEATURES]
 SEND_NEWS = true
+
+# to get news
+[RSS.FEED.mandiant]
+url = "https://www.mandiant.com/resources/blog/rss.xml"
