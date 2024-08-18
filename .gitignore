@@ -7,3 +7,4 @@ enrollments.json
 config.toml
 .vscode
 .idea
+*.config.toml
