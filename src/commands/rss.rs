@@ -1,22 +1,32 @@
 use rss::Channel;
 use std::error::Error as E2;
+use chrono::DateTime;
+use chrono_tz::America::Denver;
 use crate::{Context, Error};
 
 #[poise::command(slash_command, guild_only, ephemeral)]
 pub async fn rss(ctx: Context<'_>, 
-                 #[min = 1]
-                 #[max = 10]
-                 n: u8,
 ) -> Result<(), Error> {
     let data = &ctx.data().config_data.rss.feed;
     for i in data {
         ctx.say(format!("getting data from {}", i.0)).await?;
 
         if let Ok(channel) = specific_feed(&i.1.url).await {
-            for i in channel.items.iter().take(n as usize) {
-                if let Some(link) = &i.link {
-                    if let Some(title) = &i.title {
-                        ctx.say(format!("{} has a title of {}", link, title)).await?;
+            for i in channel.items{
+                if let Some(rfc2822_date) = i.pub_date  {
+                    let pre_date = DateTime::parse_from_rfc2822(&rfc2822_date);
+                    if let Ok(date) = pre_date {
+                        let local_date = date.naive_local().and_local_timezone(Denver);
+                        if let Some(y) = local_date.latest() {
+                            if y > chrono::Utc::now().with_timezone(&Denver).checked_sub_signed(chrono::Duration::hours(1)).unwrap_or_else(|| chrono::Utc::now().with_timezone(&Denver)) {
+                                if let Some(link) = i.link {
+                                    if let Some(title) = i.title {
+                                        ctx.say(format!("{} has a title of {}", link, title)).await?;
+                                    }
+                                }
+                            }
+                        }
+                        
                     }
                 }
             }

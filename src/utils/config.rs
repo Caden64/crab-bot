@@ -1,6 +1,5 @@
 use serde::Deserialize;
 use std::collections::HashMap;
-use std::hash::Hash;
 // constants
 
 // token
@@ -29,7 +28,7 @@ pub struct ConfigData {
     #[serde(alias = "FEATURES")]
     pub features: HashMap<String, bool>,
     #[serde(alias = "RSS")]
-    pub rss: RSS
+    pub rss: Rss
 }
 
 #[derive(Debug, Deserialize, Clone)]
@@ -49,14 +48,14 @@ pub struct Guild {
 }
 
 #[derive(Debug, Deserialize, Clone)]
-pub struct RSS {
+pub struct Rss {
     #[serde(alias = "FEED")]
-    pub feed: HashMap<String , feed>
+    pub feed: HashMap<String , Feed>
 }
 
 #[derive(Debug, Deserialize, Clone)]
-pub struct feed {
-    pub url: String   
+pub struct Feed {
+    pub url: String
 }
 
 #[derive(Debug, Deserialize, Clone)]

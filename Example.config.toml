@@ -38,3 +38,13 @@ SEND_NEWS = true
 # to get news
 [RSS.FEED.mandiant]
 url = "https://www.mandiant.com/resources/blog/rss.xml"
+[RSS.FEED.troyhunt]
+url = "https://feeds.feedburner.com/TroyHunt"
+[RSS.FEED.thehackernews]
+url = "https://feeds.feedburner.com/TheHackersNews"
+[RSS.FEED.techspot]
+url = "https://www.techspot.com/backend.xml"
+[RSS.FEED.tomsguide]
+url = "https://www.tomsguide.com/feeds/all"
+[RSS.FEED.malwarebytes]
+url = "https://www.malwarebytes.com/blog/Feed/index.xml"
