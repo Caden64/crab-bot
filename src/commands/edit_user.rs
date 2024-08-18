@@ -1,9 +1,9 @@
+use crate::storage::save_user::save_to_json;
 use crate::storage::user::EditableUser;
 use crate::{
     checks::check_user_exists::check_user_exists, storage::get_user::get_user, Context, Error,
 };
 use poise::{serenity_prelude as serenity, CreateReply};
-use crate::storage::save_user::save_to_json;
 
 #[poise::command(slash_command, ephemeral, guild_only, check = "check_user_exists")]
 pub async fn edit_user(ctx: Context<'_>) -> Result<(), Error> {
@@ -28,9 +28,11 @@ pub async fn edit_user(ctx: Context<'_>) -> Result<(), Error> {
         while let Some(mci) = serenity::ComponentInteractionCollector::new(ctx.serenity_context())
             .timeout(std::time::Duration::from_secs(120))
             .filter(move |mci| mci.data.custom_id == ctx_uuid.to_string())
-            .await 
+            .await
         {
-            let data = poise::execute_modal_on_component_interaction::<EditableUser>(ctx, mci, None, None).await?;
+            let data =
+                poise::execute_modal_on_component_interaction::<EditableUser>(ctx, mci, None, None)
+                    .await?;
             if let Some(data) = data {
                 if let Some(name) = data.name {
                     editable_user.name = name
@@ -42,11 +44,10 @@ pub async fn edit_user(ctx: Context<'_>) -> Result<(), Error> {
                     editable_user.thm_username = thm_username
                 }
                 if save_to_json(&editable_user).is_err() {
-                    ctx.reply("Unable to save changes to json").await?; 
+                    ctx.reply("Unable to save changes to json").await?;
                 } else {
                     ctx.reply("saved changes to json").await?;
                 }
-                
             }
         }
     } else {

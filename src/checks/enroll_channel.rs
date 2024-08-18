@@ -7,8 +7,8 @@ pub async fn enroll_channel(ctx: Context<'_>) -> Result<bool, Error> {
         Some(channel) => channel,
         None => {
             println!("Unable to get the guild_channel");
-            return Ok(false)
-        },
+            return Ok(false);
+        }
     };
 
     let channel_id = guild_channel.id.get();
@@ -17,8 +17,8 @@ pub async fn enroll_channel(ctx: Context<'_>) -> Result<bool, Error> {
         Some(id) => id,
         None => {
             println!("Unable to get the enroll channel ID");
-            return Ok(false)
-        },
+            return Ok(false);
+        }
     };
 
     if channel_id == *enroll_channel_id {

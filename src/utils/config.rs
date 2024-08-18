@@ -28,7 +28,7 @@ pub struct ConfigData {
     #[serde(alias = "FEATURES")]
     pub features: HashMap<String, bool>,
     #[serde(alias = "RSS")]
-    pub rss: Rss
+    pub rss: Rss,
 }
 
 #[derive(Debug, Deserialize, Clone)]
@@ -50,12 +50,12 @@ pub struct Guild {
 #[derive(Debug, Deserialize, Clone)]
 pub struct Rss {
     #[serde(alias = "FEED")]
-    pub feed: HashMap<String , Feed>
+    pub feed: HashMap<String, Feed>,
 }
 
 #[derive(Debug, Deserialize, Clone)]
 pub struct Feed {
-    pub url: String
+    pub url: String,
 }
 
 #[derive(Debug, Deserialize, Clone)]
