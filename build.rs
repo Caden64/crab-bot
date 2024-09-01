@@ -21,5 +21,5 @@ fn main() {
         values_struct: Some(ValuesStructOptions::new()),
         get_value_fn_name: Some(Cow::Borrowed("get")),
     };
-    generate_enum("src/roles.yaml", "Roles", &Options::minimal()).unwrap();
+    generate_enum("roles.yaml", "Roles", &options).unwrap();
 }

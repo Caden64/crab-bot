@@ -2,7 +2,7 @@ mod checks;
 mod commands;
 mod storage;
 mod utils;
-pub mod roles;
+// pub mod roles;
 use crate::commands::acknowledgement::acknowledge;
 use crate::commands::award::award;
 use crate::commands::edit_user::edit_user;
