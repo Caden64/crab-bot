@@ -3,7 +3,6 @@ mod commands;
 mod storage;
 mod utils;
 pub mod roles;
-
 use crate::commands::acknowledgement::acknowledge;
 use crate::commands::award::award;
 use crate::commands::edit_user::edit_user;
@@ -19,6 +18,7 @@ use poise::serenity_prelude as serenity;
 use serde::Deserialize;
 use std::default::Default;
 use std::sync::atomic::AtomicBool;
+use crate::commands::test_enum::inline_choice;
 
 // define types for bot use
 #[derive(Debug, Deserialize)]
@@ -74,6 +74,7 @@ async fn main() {
                 remove_points(),
                 edit_user(),
                 rss(),
+                inline_choice(),
             ],
             // Handler for other events
             event_handler: |ctx, event, framework, data| {

@@ -1,1 +1,15 @@
-# ! [cfg_attr (rustfmt , rustfmt_skip)] # ! [allow (dead_code)] # [derive (Debug , Clone , Copy , PartialEq , Eq , PartialOrd , Ord , Hash , Sized)] pub enum Roles { RoleOne , RoleTwo , } impl Default for Roles { fn default () -> Self { Self :: RoleOne } } impl std :: fmt :: Display for Roles { fn fmt (& self , f : & mut std :: fmt :: Formatter) -> std :: fmt :: Result { write ! (f , "{:?}" , self) } }
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, poise::ChoiceParameter)]
+pub enum Roles {
+    RoleOne,
+    RoleTwo,
+}
+impl Default for Roles {
+    fn default() -> Self {
+        Self::RoleOne
+    }
+}
+impl std::fmt::Display for Roles {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(f, "{:?}", self)
+    }
+}
