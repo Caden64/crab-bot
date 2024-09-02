@@ -20,7 +20,4 @@ chrono-tz = "0.9.0"
 rss = "2.0.9"
 reqwest = "0.12.7"
 clokwerk = "0.4.0"
-
-[build-dependencies]
-poise = "0.6.1"
-edres = { version = "0.6.0", features = ["yaml"] }
+auto_enums = "0.8.6"
