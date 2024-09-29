@@ -5,6 +5,7 @@ mod utils;
 
 use crate::commands::acknowledgement::acknowledge;
 use crate::commands::award::award;
+use crate::commands::check_user::user;
 use crate::commands::edit_user::edit_user;
 use crate::commands::enroll::enroll;
 use crate::commands::help::help;
@@ -18,7 +19,6 @@ use poise::serenity_prelude as serenity;
 use serde::Deserialize;
 use std::default::Default;
 use std::sync::atomic::AtomicBool;
-use crate::commands::check_user::user;
 
 // define types for bot use
 #[derive(Debug, Deserialize)]
