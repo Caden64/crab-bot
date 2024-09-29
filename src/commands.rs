@@ -7,3 +7,4 @@ pub mod ping;
 pub mod register_commands;
 pub mod remove_points;
 pub mod rss;
+pub mod check_user;

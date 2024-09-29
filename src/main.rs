@@ -18,6 +18,7 @@ use poise::serenity_prelude as serenity;
 use serde::Deserialize;
 use std::default::Default;
 use std::sync::atomic::AtomicBool;
+use crate::commands::check_user::user;
 
 // define types for bot use
 #[derive(Debug, Deserialize)]
@@ -73,6 +74,7 @@ async fn main() {
                 remove_points(),
                 edit_user(),
                 rss(),
+                user(),
             ],
             // Handler for other events
             event_handler: |ctx, event, framework, data| {
