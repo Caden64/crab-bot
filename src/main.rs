@@ -4,6 +4,7 @@ mod storage;
 mod utils;
 use crate::commands::acknowledgement::acknowledge;
 use crate::commands::award::award;
+use crate::commands::check_user::user;
 use crate::commands::edit_user::edit_user;
 use crate::commands::enroll::enroll;
 use crate::commands::help::help;
@@ -73,6 +74,7 @@ async fn main() {
                 remove_points(),
                 edit_user(),
                 rss(),
+                user(),
                 inline_choice(),
             ],
             // Handler for other events
