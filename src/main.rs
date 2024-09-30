@@ -7,19 +7,19 @@ use crate::commands::award::award;
 use crate::commands::check_user::user;
 use crate::commands::edit_user::edit_user;
 use crate::commands::enroll::enroll;
+use crate::commands::force_register::force_register;
 use crate::commands::help::help;
 use crate::commands::ping::ping;
 use crate::commands::register_commands::register_commands;
 use crate::commands::remove_points::remove_points;
 use crate::commands::rss::rss;
+use crate::commands::test_enum::inline_choice;
 use crate::utils::config::{get_config, ConfigData, DISCORD_TOKEN, REMOVE_ROLE_ID};
 use crate::utils::event_handler::event_handler;
 use poise::serenity_prelude as serenity;
 use serde::Deserialize;
 use std::default::Default;
 use std::sync::atomic::AtomicBool;
-use crate::commands::force_register::force_register;
-use crate::commands::test_enum::inline_choice;
 
 // define types for bot use
 #[derive(Debug, Deserialize)]
@@ -77,7 +77,7 @@ async fn main() {
                 rss(),
                 user(),
                 inline_choice(),
-                force_register()
+                force_register(),
             ],
             // Handler for other events
             event_handler: |ctx, event, framework, data| {

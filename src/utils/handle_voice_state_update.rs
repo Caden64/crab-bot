@@ -30,8 +30,11 @@ pub async fn handle_voice_state_update(
                     {
                         let mem_display_name = new_member.display_name();
                         // Fetch all channels from guild
-                        if let Ok(channels) = new.guild_id.unwrap().channels(ctx.http.http()).await
-                        {
+                        let guild_id = match new.guild_id {
+                            Some(guild_id) => guild_id,
+                            None => return,
+                        };
+                        if let Ok(channels) = guild_id.channels(ctx.http.http()).await {
                             // If the meeting channel exists
                             if let Some(new_channel) = channels.get(new_channel_id) {
                                 // Fetch all members from the channel

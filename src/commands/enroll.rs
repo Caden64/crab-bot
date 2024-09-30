@@ -20,8 +20,7 @@ pub async fn enroll(
     #[description = "First and at least last initial"] name: String,
     #[description = "Your student email"] email: String,
     #[description = "Why are you interested in cyber club"] interests: String,
-    #[description = "What role best describes you"]
-    role: RoleEnum,
+    #[description = "What role best describes you"] role: RoleEnum,
     #[description = "Would you like to occasionally receive emails"] email_distro: Option<bool>,
 ) -> Result<(), Error> {
     // Ensure the name input contains more than one word
@@ -36,24 +35,36 @@ pub async fn enroll(
     }
 
     // Split name into first name and last initial
-    let first = name.split_ascii_whitespace().next().unwrap();
+    let first = match name.split_ascii_whitespace().next() {
+        Some(first_name) => first_name,
+        None => {
+            ctx.reply("invalid name must include last initial").await?;
+            return Ok(());
+        }
+    };
     let last_initial = match name.split_ascii_whitespace().nth(1) {
         Some(second_word) => match second_word.chars().next() {
             Some(initial) => initial,
             None => {
                 ctx.reply("invalid name must include last initial").await?;
-                return Ok(())
-            },
+                return Ok(());
+            }
         },
         None => {
             ctx.reply("invalid name must include last initial").await?;
-            return Ok(())
-        },
+            return Ok(());
+        }
     };
     let email_distro = email_distro.unwrap_or_default();
 
     // Check if the university name exists in the public roles
-    if !ctx.data().config_data.roles.public.contains_key(&role.to_string()) {
+    if !ctx
+        .data()
+        .config_data
+        .roles
+        .public
+        .contains_key(&role.to_string())
+    {
         ctx.reply("Unknown university selected please try again")
             .await?;
         return Ok(());
@@ -154,6 +165,7 @@ pub async fn enroll(
     // Try to save the user data on a JSON file
     if save_to_json(&user_data).is_err() {
         // Log any errors that happened during saving
+        println!("Had an error while saving user data");
         ctx.reply(error_format).await?;
     }
     Ok(())

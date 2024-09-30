@@ -1,8 +1,8 @@
+use edres::EnumOptions;
+use edres::{generate_enum_from_source, Format, Options};
 use std::env;
 use std::fs;
 use std::path::PathBuf;
-use edres::EnumOptions;
-use edres::{generate_enum_from_source, Format, Options};
 
 fn main() {
     println!("cargo:rerun-if-changed=build.rs");
@@ -18,12 +18,20 @@ fn main() {
             enums: EnumOptions {
                 impl_display: true,
                 impl_from_str: true,
-                derived_traits: vec!["poise::ChoiceParameter".into(), "serde::Serialize".into(), "Eq".into(), "Hash".into(), "PartialEq".into()].into(),
+                derived_traits: vec![
+                    "poise::ChoiceParameter".into(),
+                    "serde::Serialize".into(),
+                    "Eq".into(),
+                    "Hash".into(),
+                    "PartialEq".into(),
+                ]
+                .into(),
                 ..EnumOptions::minimal()
             },
             ..Options::default()
         },
-    ).unwrap();
+    )
+    .unwrap();
 
     // Write the generated code to a file in the OUT_DIR
     let out_dir = PathBuf::from(env::var("OUT_DIR").unwrap());

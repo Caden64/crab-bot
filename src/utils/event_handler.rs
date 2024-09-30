@@ -52,7 +52,11 @@ pub async fn event_handler(
                     return Ok(());
                 }
             }
-            if new_message.channel_id == *data.config_data.channels.get(READING_CHANNEL).unwrap() {
+            let reading_channel_id = match data.config_data.channels.get(READING_CHANNEL) {
+                Some(&channel) => channel,
+                None => return Ok(()),
+            };
+            if new_message.channel_id == reading_channel_id {
                 let http_match = Regex::new(r"^(https|http|\^\^).*").unwrap();
                 if http_match.is_match(&new_message.content) {
                     for partner in data.config_data.guild.partners.clone() {

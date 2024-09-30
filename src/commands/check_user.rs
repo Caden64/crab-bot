@@ -8,8 +8,11 @@ pub async fn user(ctx: Context<'_>, user: User) -> Result<(), Error> {
     ctx.reply(format!(
         "server_name: {}\nglobal name: {}\nuser_id: {}\nmfa: {}",
         user.name,
-        user.global_name
-            .unwrap_or("Unable to get global name".parse().unwrap()),
+        user.global_name.unwrap_or(
+            "Unable to get global name"
+                .parse()
+                .unwrap_or(String::from("Unable to get global name"))
+        ),
         user.id,
         user.mfa_enabled
     ))
