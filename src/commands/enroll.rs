@@ -1,9 +1,9 @@
+include!(concat!(env!("OUT_DIR"), "/generated_roles.rs"));
 use crate::checks::enroll_channel::enroll_channel;
 use crate::checks::remove_role::remove_role;
 use crate::storage::save_user::save_to_json;
 use crate::storage::user::User;
 use crate::utils::config::{ADMIN_ROLE_ID, REMOVE_ROLE_ID};
-use crate::utils::role_autocomplete::role_autocomplete;
 use crate::{Context, Error};
 use poise::serenity_prelude::{EditMember, Mentionable, RoleId};
 use regex::Regex;
@@ -20,9 +20,8 @@ pub async fn enroll(
     #[description = "First and at least last initial"] name: String,
     #[description = "Your student email"] email: String,
     #[description = "Why are you interested in cyber club"] interests: String,
-    #[autocomplete = "role_autocomplete"]
     #[description = "What role best describes you"]
-    role: String,
+    role: RoleEnum,
     #[description = "Would you like to occasionally receive emails"] email_distro: Option<bool>,
 ) -> Result<(), Error> {
     // Ensure the name input contains more than one word
@@ -54,12 +53,12 @@ pub async fn enroll(
     let email_distro = email_distro.unwrap_or_default();
 
     // Check if the university name exists in the public roles
-    if !ctx.data().config_data.roles.public.contains_key(&role) {
+    if !ctx.data().config_data.roles.public.contains_key(&role.to_string()) {
         ctx.reply("Unknown university selected please try again")
             .await?;
         return Ok(());
     }
-    let uni_role = ctx.data().config_data.roles.public.get(&role);
+    let uni_role = ctx.data().config_data.roles.public.get(&role.to_string());
     if uni_role.is_none() {
         ctx.reply("Invalid Role").await?;
         return Ok(());

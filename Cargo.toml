@@ -19,3 +19,6 @@ chrono-tz = "0.10.0"
 rss = "2.0.9"
 reqwest = "0.12.7"
 clokwerk = "0.4.0"
+
+[build-dependencies]
+edres = "0.6.0"

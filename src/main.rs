@@ -18,6 +18,7 @@ use poise::serenity_prelude as serenity;
 use serde::Deserialize;
 use std::default::Default;
 use std::sync::atomic::AtomicBool;
+use crate::commands::force_register::force_register;
 use crate::commands::test_enum::inline_choice;
 
 // define types for bot use
@@ -76,6 +77,7 @@ async fn main() {
                 rss(),
                 user(),
                 inline_choice(),
+                force_register()
             ],
             // Handler for other events
             event_handler: |ctx, event, framework, data| {
