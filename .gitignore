@@ -8,3 +8,4 @@ config.toml
 .vscode
 .idea
 *.config.toml
+roles.toml
