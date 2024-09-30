@@ -5,11 +5,12 @@ use edres::EnumOptions;
 use edres::{generate_enum_from_source, Format, Options};
 
 fn main() {
+    println!("cargo:rerun-if-changed=build.rs");
+    println!("cargo:rerun-if-changed=roles.toml");
     // Read the TOML file
     let roles_toml = fs::read_to_string("roles.toml").expect("Unable to read roles.toml");
-
     // Generate the enum from the TOML file content
-    let mut generated_code = generate_enum_from_source(
+    let generated_code = generate_enum_from_source(
         &roles_toml,
         "RoleEnum",
         Format::Toml,

@@ -78,7 +78,7 @@ pub async fn enroll(
                 Ok(roles) => match ctx.data().config_data.roles.private.get(ADMIN_ROLE_ID) {
                     Some(admin_role_id) => match roles.get(&RoleId::new(*admin_role_id)) {
                         Some(role) => format!(
-                            "Hi {}, Something has gone wrong. The people with {} will help you!",
+                            "Hi {}, Something has gone wrong. The people with {} will help you! Just message them!",
                             member.user.mention(),
                             role.mention()
                         ),
@@ -107,8 +107,9 @@ pub async fn enroll(
                     if let Some(role_id) = remove_role_id {
                         match member.remove_role(&http, *role_id).await {
                             Ok(_) => (),
-                            Err(_) => {
+                            Err(e) => {
                                 // Handle errors by sending a message
+                                println!("error removing role error: {}", e.to_string());
                                 ctx.defer_ephemeral().await?;
                                 ctx.reply(error_format).await?;
                                 return Ok(());
@@ -116,8 +117,9 @@ pub async fn enroll(
                         }
                     }
                 }
-                Err(_) => {
+                Err(e) => {
                     // Handle errors by sending a message
+                    println!("error editing member error: {}", e.to_string());
                     ctx.defer_ephemeral().await?;
                     ctx.reply(error_format).await?;
                     return Ok(());

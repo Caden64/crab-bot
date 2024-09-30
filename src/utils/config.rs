@@ -66,6 +66,7 @@ pub struct GuildMain {
     pub president: u64,
 }
 
+#[allow(dead_code)]
 #[derive(Debug, Deserialize, Clone)]
 pub struct GuildPartners {
     #[serde(alias = "ID")]

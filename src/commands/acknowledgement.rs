@@ -55,19 +55,43 @@ pub async fn acknowledge(ctx: Context<'_>) -> Result<(), Error> {
 
             // Check if user doesn't have any other roles
             // Change user roles in the guild
-            ctx.guild_id()
-                .unwrap()
-                .edit_member(ctx.http(), mci.user.id, edit_user)
-                .await
-                .unwrap();
+            match (ctx.guild_id(), ctx.http()) {
+                (Some(guild_id), http) => {
+                    match guild_id.edit_member(http, mci.user.id, edit_user).await {
+                        Ok(_) => {
+                            println!("Member edited successfully");
+                            // Member edit successful
+                        },
+                        Err(e) => {
+                            // Handle the error, e.g., log it or send an error message
+                            println!("Failed to edit member: {:?}", e);
+                        }
+                    }
+                },
+                (None, _) => {
+                    // Handle the case where guild_id is None
+                    println!("Cannot edit member: not in a guild context");
+                }
+            }
             // Send DM to the user
-            mci.user
-                .create_dm_channel(&ctx.http())
-                .await
-                .unwrap()
-                .send_message(&ctx.http(), enroll_message)
-                .await
-                .unwrap();
+            match mci.user.create_dm_channel(&ctx.http()).await {
+                Ok(dm_channel) => {
+                    match dm_channel.send_message(&ctx.http(), enroll_message).await {
+                        Ok(_) => {
+                            // Message sent successfully
+                            println!("Enrollment message sent to user");
+                        },
+                        Err(e) => {
+                            // Handle error in sending message
+                            println!("Failed to send enrollment message: {:?}", e);
+                        }
+                    }
+                },
+                Err(e) => {
+                    // Handle error in creating DM channel
+                    println!("Failed to create DM channel: {:?}", e);
+                }
+            }
             // Send acknowledgment reply
             mci.create_response(ctx, serenity::CreateInteractionResponse::Acknowledge)
                 .await?
