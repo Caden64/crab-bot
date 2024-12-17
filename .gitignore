@@ -1,11 +1,2 @@
-/target
-/local
-.env
-Secrets*.toml
-Cargo.lock
-enrollments.json
-config.toml
-.vscode
+target
 .idea
-*.config.toml
-roles.toml
