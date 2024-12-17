@@ -1,0 +1,27 @@
+services:
+  crab_bot:
+    build:
+      context: ./discordbot
+    networks:
+      - backend
+    env_file:
+      - ./discordbot/.env
+  dashboard:
+    build:
+      context: ./botdashboard
+    networks:
+      - frontend
+    ports:
+      - "4321:4321"
+  api:
+    build:
+      context: ./botapi
+    networks:
+      - backend
+      - frontend
+
+networks:
+  backend:
+    driver: bridge
+  frontend:
+    driver: bridge

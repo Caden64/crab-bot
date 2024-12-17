@@ -6,14 +6,14 @@ type Context<'a> = poise::Context<'a, Data, Error>;
 
 #[poise::command(slash_command, guild_only, ephemeral)]
 async fn index(ctx: Context<'_>) -> Result<(), Error>{
-    reqwest::get("http://127.0.0.1:8080").await.unwrap();
+    reqwest::get("http://api:8080").await.unwrap();
     ctx.say("got it").await?;
     Ok(())
 }
 
 #[poise::command(slash_command, guild_only, ephemeral)]
 async fn size(ctx: Context<'_>) -> Result<(), Error>{
-    let data = reqwest::get("http://127.0.0.1:8080/stats").await.unwrap();
+    let data = reqwest::get("http://api:8080/stats").await.unwrap();
     let body = data.text().await?;
     ctx.say(format!("index gotten: {}", body)).await?;
     Ok(())
@@ -21,7 +21,7 @@ async fn size(ctx: Context<'_>) -> Result<(), Error>{
 
 #[tokio::main]
 async fn main() {
-    let token = "DISCORD_TOKEN".to_string();
+    let token = std::env::var("DISCORD_TOKEN").expect("missing DISCORD_TOKEN");
     let intents = serenity::GatewayIntents::non_privileged();
 
     let framework = poise::Framework::builder()
