@@ -9,7 +9,10 @@ import node from '@astrojs/node';
 
 // https://astro.build/config
 export default defineConfig({
-  integrations: [react(), tailwind()],
+  output: 'server',
+  integrations: [react(), tailwind({
+    applyBaseStyles: true
+  })],
 
   adapter: node({
     mode: 'standalone'
