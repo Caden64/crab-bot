@@ -1,94 +1,101 @@
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import React from "react";
+} from "@/components/ui/card";
+import { Button } from "./ui/button";
+import { createSignal } from "solid-js";
+import { TextFieldRoot, TextField, TextFieldLabel} from "@/components/ui/textfield.tsx";
+import {Checkbox, CheckboxControl, CheckboxLabel} from "@/components/ui/checkbox";
 import {authClient} from "@/lib/auth-client.ts";
 
-export function SignupForm({
-  className,
-  ...props
-}: React.ComponentPropsWithoutRef<"div">) {
-
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    const form = e.target as HTMLFormElement;
-    const data = new FormData(form);
-    authClient.signUp.email(
-        {
-          email: data.get("email") as string,
-          name: data.get("name") as string,
-          password: data.get("password") as string,
-        },
-        {
-          onError: (error) => {
-            console.warn(error);
-            // toast.error(error.error.message);
-          },
-          onSuccess: () => {
-            console.log("Sign up successfully");
-            // toast.success("You have been logged in!");
-          },
-        },
-    );
-  }
-
+export function SignupForm() {
+  const [email, setEmail] = createSignal("");
+  const [name, setName] = createSignal("");
+  const [password, setPassword] = createSignal("");
+  const [rememberMe, setRememberMe] = createSignal(false);
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card>
+      <Card class="max-w-max">
         <CardHeader>
-          <CardTitle className="text-2xl">Sign up</CardTitle>
-          <CardDescription>
+          <CardTitle class="text-lg md:text-xl">Sign In</CardTitle>
+          <CardDescription class="text-xs md:text-sm">
             Enter your email below to sign up for an account
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit}>
-            <div className="flex flex-col gap-6">
-              <div className="grid gap-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                    id="email"
+          <div class="grid gap-4">
+            <div class="grid gap-2">
+              <TextFieldRoot class="w-full">
+                <TextFieldLabel for="email">Email</TextFieldLabel>
+                <TextField
                     type="email"
-                    placeholder="you@example.com"
-                    required
+                    placeholder="Email"
+                    value={email()}
+                    onInput={(e) => {
+                      if ("value" in e.target) setEmail(e.target.value as string);
+                    }}
                 />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="text">Username</Label>
-                <Input
-                    id="name"
+              </TextFieldRoot>
+              <TextFieldRoot class="w-full">
+                <TextFieldLabel for="name">Username</TextFieldLabel>
+                <TextField
                     type="text"
-                    placeholder="you"
-                    required
+                    placeholder="Username"
+                    value={name()}
+                    onInput={(e) => {
+                      if ("value" in e.target) setName(e.target.value as string);
+                    }}
                 />
-              </div>
-              <div className="grid gap-2">
-                <div className="flex items-center">
-                  <Label htmlFor="password">Password</Label>
+              </TextFieldRoot>
+              <TextFieldRoot class="w-full">
+                <div class="flex items-center justify-between">
+                  <TextFieldLabel for="password">Password</TextFieldLabel>
                 </div>
-                <Input id="password" type="password" required/>
-              </div>
-              <Button type="submit" className="w-full bg-neutral-950 dark:bg-neutral-100">
-                Sign up
+                <TextField
+                    type="password"
+                    placeholder="Password"
+                    value={password()}
+                    onInput={(e) => {
+                      if ("value" in e.target)
+                        setPassword(e.target.value as string);
+                    }}
+                />
+              </TextFieldRoot>
+              <Button
+                  onclick={() => {
+                    authClient.signUp.email({
+                      email: email(),
+                      name: name(),
+                      password: password(),
+                      fetchOptions: {
+                        onError(context) {
+                          alert(context.error.message);
+                        },
+                        onSuccess(context ) {
+                          alert("Sign up successfully!");
+                        }
+                      },
+                      callbackURL: "/signin",
+                    });
+                  }}
+              >
+                Sign Up
               </Button>
             </div>
-            <div className="mt-4 text-center text-sm">
+            <p class="text-sm text-center">
               Already have an account?{" "}
-              <a href="/login" className="underline underline-offset-4">
-                Login
+              <a
+                  href="/signin"
+                  class="text-blue-900 dark:text-orange-200 underline"
+              >
+                Sign In
               </a>
-            </div>
-          </form>
+            </p>
+          </div>
         </CardContent>
       </Card>
-    </div>
-  )
+  );
 }

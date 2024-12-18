@@ -1,12 +1,12 @@
 ---
 
-import {SignupForm} from "../components/signup-form";
-import Layout from "../layouts/Layout.astro";
+import {SignupForm} from "@/components/signup-form";
+import Layout from "@/layouts/Layout.astro";
 ---
 <Layout>
     <div class="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
         <div class="w-full max-w-sm">
-            <SignupForm client:load />
+            <SignupForm />
         </div>
     </div>
 </Layout>

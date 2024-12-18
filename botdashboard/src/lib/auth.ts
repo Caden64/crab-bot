@@ -1,9 +1,10 @@
 import { betterAuth } from "better-auth";
-// @ts-ignore
-import Database from "better-sqlite3";
-
+import pkg from 'pg';
+const { Pool } = pkg;
 export const auth = betterAuth({
-    database: new Database("./sqlite.db"),
+    database: new Pool({
+        connectionString: "postgres://:user:password@postgres:5432/better_auth"
+    }),
     emailAndPassword: {
         enabled: true
     },

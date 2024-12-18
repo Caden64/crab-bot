@@ -1,27 +1,58 @@
 services:
   crab_bot:
+    container_name: Crab-Bot
     build:
       context: ./discordbot
     networks:
       - backend
     env_file:
       - ./discordbot/.env
+    restart: always
+    depends_on:
+      - api
   dashboard:
+    container_name: Dashboard
     build:
       context: ./botdashboard
     networks:
       - frontend
     ports:
       - "4321:4321"
+    restart: always
+    depends_on:
+      - postgres
+      - api
+      - crab_bot
+    env_file:
+      - ./botdashboard/.env
   api:
+    container_name: API-service
     build:
       context: ./botapi
     networks:
       - backend
       - frontend
+    restart: always
+  postgres:
+    container_name: Postgres
+    image: postgres:10.4
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./botdashboard/better-auth_migrations/init.sql:/docker-entrypoint-initdb.d/init.sql
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: better_auth
 
 networks:
   backend:
     driver: bridge
   frontend:
     driver: bridge
+
+volumes:
+  postgres_data:
+

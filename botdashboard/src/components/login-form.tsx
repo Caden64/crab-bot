@@ -1,91 +1,104 @@
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import React from "react";
+} from "@/components/ui/card";
+import { Button } from "./ui/button";
+import { createSignal } from "solid-js";
+import { TextFieldRoot, TextField, TextFieldLabel} from "@/components/ui/textfield.tsx";
+import {Checkbox, CheckboxControl, CheckboxLabel} from "@/components/ui/checkbox";
 import {authClient} from "@/lib/auth-client.ts";
 
-export function LoginForm({
-  className,
-  ...props
-}: React.ComponentPropsWithoutRef<"div">) {
-
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    const form = e.target as HTMLFormElement;
-    const data = new FormData(form);
-    authClient.signIn.email(
-        {
-          email: data.get("email") as string,
-          password: data.get("password") as string,
-        },
-        {
-          onError: (error) => {
-            console.warn(error);
-            // toast.error(error.error.message);
-          },
-          onSuccess: () => {
-            // toast.success("You have been logged in!");
-            console.log("log in successfully");
-          },
-        },
-    );
-  }
-
-
+export function LoginForm() {
+  const [email, setEmail] = createSignal("");
+  const [password, setPassword] = createSignal("");
+  const [rememberMe, setRememberMe] = createSignal(false);
   return (
-    <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card>
+      <Card class="max-w-max">
         <CardHeader>
-          <CardTitle className="text-2xl">Login</CardTitle>
-          <CardDescription>
+          <CardTitle class="text-lg md:text-xl">Sign In</CardTitle>
+          <CardDescription class="text-xs md:text-sm">
             Enter your email below to login to your account
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit}>
-            <div className="flex flex-col gap-6">
-              <div className="grid gap-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="you@example.com"
-                  required
+          <div class="grid gap-4">
+            <div class="grid gap-2">
+              <TextFieldRoot class="w-full">
+                <TextFieldLabel for="email">Email</TextFieldLabel>
+                <TextField
+                    type="email"
+                    placeholder="Email"
+                    value={email()}
+                    onInput={(e) => {
+                      if ("value" in e.target) setEmail(e.target.value as string);
+                    }}
                 />
-              </div>
-              <div className="grid gap-2">
-                <div className="flex items-center">
-                  <Label htmlFor="password">Password</Label>
+              </TextFieldRoot>
+              <TextFieldRoot class="w-full">
+                <div class="flex items-center justify-between">
+                  <TextFieldLabel for="password">Password</TextFieldLabel>
                   <a
-                    href="#"
-                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
+                      href="/forget-password"
+                      class="ml-auto inline-block text-sm underline"
                   >
                     Forgot your password?
                   </a>
                 </div>
-                <Input id="password" type="password" required />
-              </div>
-              <Button type="submit" className="w-full">
-                Login
+                <TextField
+                    type="password"
+                    placeholder="Password"
+                    value={password()}
+                    onInput={(e) => {
+                      if ("value" in e.target)
+                        setPassword(e.target.value as string);
+                    }}
+                />
+              </TextFieldRoot>
+              <Checkbox
+                  class="flex items-center gap-2 z-50"
+                  onChange={(e) => {
+                    setRememberMe(e);
+                  }}
+                  checked={rememberMe()}
+              >
+                <CheckboxControl />
+                <CheckboxLabel class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                  Remember Me
+                </CheckboxLabel>
+              </Checkbox>
+              <Button
+                  onclick={() => {
+                    authClient.signIn.email({
+                      email: email(),
+                      password: password(),
+                      rememberMe: rememberMe(),
+                      fetchOptions: {
+                        onError(context) {
+                          alert(context.error.message);
+                        },
+                      },
+                      callbackURL: "/",
+                    });
+                  }}
+              >
+                Sign In
               </Button>
             </div>
-            <div className="mt-4 text-center text-sm">
-              Don&apos;t have an account?{" "}
-              <a href="/signup" className="underline underline-offset-4">
-                Sign up
+            <p class="text-sm text-center">
+              Don't have an account yet?{" "}
+              <a
+                  href="/signup"
+                  class="text-blue-900 dark:text-orange-200 underline"
+              >
+                Sign Up
               </a>
-            </div>
-          </form>
+            </p>
+          </div>
         </CardContent>
       </Card>
-    </div>
-  )
+  );
 }
