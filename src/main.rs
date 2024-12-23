@@ -13,6 +13,7 @@ use poise::serenity_prelude as serenity;
 use serde::Deserialize;
 use std::default::Default;
 use std::sync::atomic::AtomicBool;
+use crate::commands::news::news;
 
 // define types for bot use
 #[derive(Debug, Deserialize)]
@@ -64,6 +65,7 @@ async fn main() {
                 register_commands(),
                 help(),
                 acknowledge(),
+                news(),
             ],
             // Handler for other events
             event_handler: |ctx, event, framework, data| {

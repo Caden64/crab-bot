@@ -25,8 +25,6 @@ pub struct ConfigData {
     pub roles: Roles,
     #[serde(alias = "CHANNELS")]
     pub channels: HashMap<String, u64>,
-    #[serde(alias = "FEATURES")]
-    pub features: HashMap<String, bool>,
     #[serde(alias = "RSS")]
     pub rss: Rss,
 }

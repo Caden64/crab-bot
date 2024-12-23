@@ -1,10 +1,7 @@
 use poise::serenity_prelude as serenity;
 use poise::serenity_prelude::FullEvent::{GuildMemberAddition, Message, Ready, VoiceStateUpdate};
-use poise::serenity_prelude::{CacheHttp, ChannelId, CreateMessage, Mentionable};
-use regex::Regex;
+use poise::serenity_prelude::{CacheHttp, CreateMessage, Mentionable};
 
-use crate::utils::config::READING_CHANNEL;
-use crate::utils::handle_voice_state_update::handle_voice_state_update;
 use crate::{Data, Error};
 
 pub async fn event_handler(
@@ -40,42 +37,6 @@ pub async fn event_handler(
                 new_member.user.name,
                 ctx.http().get_guild(new_member.guild_id).await?.name
             );
-        }
-        VoiceStateUpdate { new, old } => {
-            handle_voice_state_update(new, old, ctx, framework, data).await;
-        }
-        // Fallback for other types of event
-        Message { new_message } => {
-            let x = framework.user_data.config_data.features.get("SEND_NEWS");
-            if let Some(y) = x {
-                if !y {
-                    return Ok(());
-                }
-            }
-            let reading_channel_id = match data.config_data.channels.get(READING_CHANNEL) {
-                Some(&channel) => channel,
-                None => return Ok(()),
-            };
-            if new_message.channel_id == reading_channel_id {
-                let http_match = Regex::new(r"^(https|http|\^\^).*").unwrap();
-                if http_match.is_match(&new_message.content) {
-                    for partner in data.config_data.guild.partners.clone() {
-                        println!("FOR PARTNER {}", partner.0);
-                        if partner.1.send_news {
-                            let message = CreateMessage::new().content(format!(
-                                "*This was originally posted by `{}`:*\n{}",
-                                new_message.author.name, new_message.content
-                            ));
-                            ctx.http
-                                .get_channel(ChannelId::new(partner.1.news_channel))
-                                .await?
-                                .id()
-                                .send_message(ctx.http.http(), message)
-                                .await?;
-                        }
-                    }
-                }
-            }
         }
         _ => {}
     }
