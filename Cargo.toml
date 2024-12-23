@@ -12,11 +12,6 @@ tokio = { version = "1.40.0", features = ["rt-multi-thread"] }
 toml = "0.8.19"
 serde_json = "1.0.134"
 regex = "1.11.1"
-chrono = "0.4.39"
-chrono-tz = "0.10.0"
-reqwest = "0.12.9"
-clokwerk = "0.4.0"
-rss = "2.0.11"
 
 [build-dependencies]
 edres = "0.6.0"

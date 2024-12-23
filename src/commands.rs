@@ -1,12 +1,5 @@
 pub mod acknowledgement;
-pub mod award;
-pub mod check_user;
-pub mod edit_user;
 pub mod enroll;
-pub mod force_register;
 pub mod help;
 pub mod ping;
 pub mod register_commands;
-pub mod remove_points;
-pub mod rss;
-pub mod test_enum;

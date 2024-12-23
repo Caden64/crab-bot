@@ -1,4 +1,3 @@
-use poise;
 use serde::{Deserialize, Serialize};
 
 // User type
@@ -13,18 +12,4 @@ pub struct User {
     pub email_distro: bool,
     pub points: i64,
     pub thm_username: String,
-}
-
-#[derive(Debug, poise::Modal)]
-#[allow(dead_code)] // fields only used for Debug print
-pub struct EditableUser {
-    #[min_length = 1]
-    #[max_length = 50]
-    pub name: Option<String>,
-    #[min_length = 2]
-    #[max_length = 50]
-    pub email: Option<String>,
-    #[min_length = 1]
-    #[max_length = 50]
-    pub thm_username: Option<String>,
 }
