@@ -1,17 +1,20 @@
-use edres::EnumOptions;
-use edres::{generate_enum_from_source, Format, Options};
+use edres::{generate_enum_from_source, EnumOptions, Format, Options};
 use std::env;
 use std::fs;
 use std::path::PathBuf;
+include!("./src/utils/config.rs");
 
 fn main() {
     println!("cargo:rerun-if-changed=build.rs");
-    println!("cargo:rerun-if-changed=roles.toml");
+    println!("cargo:rerun-if-changed=config.rs");
     // Read the TOML file
-    let roles_toml = fs::read_to_string("roles.toml").expect("Unable to read roles.toml");
+    let roles_toml = fs::read_to_string("config.toml").expect("Unable to read roles.toml");
+    let convert_to_toml: ConfigData = toml::from_str(&roles_toml).unwrap();
+    let necessary = toml::to_string(&convert_to_toml.roles.public).unwrap();
+
     // Generate the enum from the TOML file content
     let generated_code = generate_enum_from_source(
-        &roles_toml,
+        &necessary,
         "RoleEnum",
         Format::Toml,
         &Options {

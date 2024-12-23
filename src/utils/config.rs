@@ -1,4 +1,4 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 // constants
 
@@ -15,7 +15,7 @@ pub const READING_CHANNEL: &str = "READING_CHANNEL_ID";
 pub const MEETING_CHANNEL: &str = "MEETING_CHANNEL_ID";
 
 // config file types
-#[derive(Debug, Deserialize, Clone)]
+#[derive(Debug, Deserialize, Clone, Serialize)]
 pub struct ConfigData {
     #[serde(alias = "TOKEN")]
     pub token: HashMap<String, String>,
@@ -31,7 +31,7 @@ pub struct ConfigData {
     pub rss: Rss,
 }
 
-#[derive(Debug, Deserialize, Clone)]
+#[derive(Debug, Deserialize, Clone, Serialize)]
 pub struct Roles {
     #[serde(alias = "PUBLIC")]
     pub public: HashMap<String, u64>,
@@ -39,7 +39,7 @@ pub struct Roles {
     pub private: HashMap<String, u64>,
 }
 
-#[derive(Debug, Deserialize, Clone)]
+#[derive(Debug, Deserialize, Clone, Serialize)]
 pub struct Guild {
     #[serde(alias = "MAIN")]
     pub main: GuildMain,
@@ -47,18 +47,18 @@ pub struct Guild {
     pub partners: HashMap<String, GuildPartners>,
 }
 
-#[derive(Debug, Deserialize, Clone)]
+#[derive(Debug, Deserialize, Clone, Serialize)]
 pub struct Rss {
     #[serde(alias = "FEED")]
     pub feed: HashMap<String, Feed>,
 }
 
-#[derive(Debug, Deserialize, Clone)]
+#[derive(Debug, Deserialize, Clone, Serialize)]
 pub struct Feed {
     pub url: String,
 }
 
-#[derive(Debug, Deserialize, Clone)]
+#[derive(Debug, Deserialize, Clone, Serialize)]
 pub struct GuildMain {
     #[serde(alias = "GUILD_ID")]
     pub guild_id: u64,
@@ -67,7 +67,7 @@ pub struct GuildMain {
 }
 
 #[allow(dead_code)]
-#[derive(Debug, Deserialize, Clone)]
+#[derive(Debug, Deserialize, Clone, Serialize)]
 pub struct GuildPartners {
     #[serde(alias = "ID")]
     pub id: u64,
