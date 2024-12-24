@@ -2,6 +2,7 @@ use poise::CreateReply;
 use poise::serenity_prelude::{ChannelId, Colour, CreateEmbed, CreateMessage};
 use meta_fetcher::Metadata;
 use rand::Rng;
+use regex::Regex;
 use crate::{Context, Error};
 
 
@@ -10,6 +11,12 @@ pub async fn news(
     ctx: Context<'_>,
     url: String,
 ) -> Result<(), Error> {
+    let website_regex = Regex::new("^(http|https)://[a-zA-z]+.(com|net|org|edu)$").unwrap();
+    if !website_regex.is_match(&url) {
+        ctx.defer_ephemeral().await?;
+        ctx.reply("Invalid URL").await?;
+        return Ok(())
+    }
     let channels_to_send_news_to = &ctx.data().config_data.guild.partners;
     // for some fun colors on the side
     let color = {
@@ -20,7 +27,7 @@ pub async fn news(
             rng.gen_range(0..=255),
          )
     };
-    
+
 
     let user = &ctx.author().name;
 
