@@ -12,6 +12,8 @@ tokio = { version = "1.40.0", features = ["rt-multi-thread"] }
 toml = "0.8.19"
 serde_json = "1.0.134"
 regex = "1.11.1"
+rand = "0.8.5"
+meta_fetcher = "0.1.1"
 
 [build-dependencies]
 edres = "0.6.0"

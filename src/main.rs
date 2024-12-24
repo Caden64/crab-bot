@@ -62,10 +62,11 @@ async fn main() {
             commands: vec![
                 ping(),
                 enroll(),
-                register_commands(),
                 help(),
                 acknowledge(),
                 news(),
+                #[cfg(debug_assertions)]
+                register_commands(),
             ],
             // Handler for other events
             event_handler: |ctx, event, framework, data| {
