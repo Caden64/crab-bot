@@ -11,7 +11,7 @@ pub async fn news(
     ctx: Context<'_>,
     url: String,
 ) -> Result<(), Error> {
-    let website_regex = Regex::new("^https?://[\\w.-]+\\.[a-z]{3,4}(/.*)?$").unwrap();
+    let website_regex = Regex::new("^https?://([w.-]+).[a-z]{3,4}(/.*)?$").unwrap();
     if !website_regex.is_match(&url) {
         ctx.defer_ephemeral().await?;
         ctx.reply("Invalid URL").await?;
