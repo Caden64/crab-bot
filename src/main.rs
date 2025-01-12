@@ -6,6 +6,7 @@ use crate::commands::acknowledgement::acknowledge;
 use crate::commands::enroll::enroll;
 use crate::commands::help::help;
 use crate::commands::ping::ping;
+use crate::commands::dump_channel::dump;
 use crate::commands::register_commands::register_commands;
 use crate::utils::config::{get_config, ConfigData, DISCORD_TOKEN, REMOVE_ROLE_ID};
 use crate::utils::event_handler::event_handler;
@@ -65,6 +66,8 @@ async fn main() {
                 help(),
                 acknowledge(),
                 news(),
+                #[cfg(debug_assertions)]
+                dump(),
                 #[cfg(debug_assertions)]
                 register_commands(),
             ],
