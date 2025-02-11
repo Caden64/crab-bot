@@ -2,21 +2,18 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "./ui/button";
 import { createSignal } from "solid-js";
 import { TextFieldRoot, TextField, TextFieldLabel} from "@/components/ui/textfield.tsx";
-import {Checkbox, CheckboxControl, CheckboxLabel} from "@/components/ui/checkbox";
 import {authClient} from "@/lib/auth-client.ts";
 
 export function SignupForm() {
   const [email, setEmail] = createSignal("");
   const [name, setName] = createSignal("");
   const [password, setPassword] = createSignal("");
-  const [rememberMe, setRememberMe] = createSignal(false);
   return (
       <Card class="max-w-max">
         <CardHeader>

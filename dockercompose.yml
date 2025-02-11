@@ -46,6 +46,9 @@ services:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
       POSTGRES_DB: better_auth
+    networks:
+      - frontend
+      - default
 
 networks:
   backend:

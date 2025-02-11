@@ -6,6 +6,6 @@ license = "GPL-3"
 authors = ["Caden64", "Topazstix"]
 
 [dependencies]
-tokio = { version = "1.42.0", features = ["rt-multi-thread"] }
+tokio = { version = "1.43.0", features = ["rt-multi-thread"] }
 poise = "0.6.1"
-reqwest = "0.12.9"
+reqwest = "0.12.12"
