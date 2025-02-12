@@ -2,7 +2,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -81,7 +80,7 @@ export function LoginForm() {
                           alert(context.error.message);
                         },
                       },
-                      callbackURL: "/",
+                      callbackURL: "/dashboard",
                     });
                   }}
               >

@@ -48,7 +48,6 @@ services:
       POSTGRES_DB: better_auth
     networks:
       - frontend
-      - default
 
 networks:
   backend:

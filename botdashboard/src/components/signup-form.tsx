@@ -17,7 +17,7 @@ export function SignupForm() {
   return (
       <Card class="max-w-max">
         <CardHeader>
-          <CardTitle class="text-lg md:text-xl">Sign In</CardTitle>
+          <CardTitle class="text-lg md:text-xl">Sign Up</CardTitle>
           <CardDescription class="text-xs md:text-sm">
             Enter your email below to sign up for an account
           </CardDescription>
@@ -75,7 +75,7 @@ export function SignupForm() {
                           alert("Sign up successfully!");
                         }
                       },
-                      callbackURL: "/signin",
+                      callbackURL: "/login",
                     });
                   }}
               >
@@ -85,7 +85,7 @@ export function SignupForm() {
             <p class="text-sm text-center">
               Already have an account?{" "}
               <a
-                  href="/signin"
+                  href="/login"
                   class="text-blue-900 dark:text-orange-200 underline"
               >
                 Sign In
