@@ -8,7 +8,14 @@ static COUNTER: AtomicUsize = AtomicUsize::new(0);
 async fn print_email(email: String) -> HttpResponse {
     // Spawn a new tokio task to handle the printing
     tokio::spawn(async move {
-        println!("Email from separate thread: {}", email);
+        let x = email.split_ascii_whitespace().collect::<Vec<&str>>();
+        let mut x = x.iter();
+        let email = x.next().unwrap().to_owned().to_owned();
+        let otp = x.next().unwrap().to_owned().to_owned();
+        let reason = x.next().unwrap().to_owned().to_owned();
+        println!("email: {}\nOTP: {}\nreason: {}", email, otp, reason);
+        
+        // just need to send the actual email now using creds from env and then go back to dashboard for verification
     });
 
     HttpResponse::Ok().body("Message processing started")

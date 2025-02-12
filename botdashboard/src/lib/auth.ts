@@ -15,7 +15,19 @@ export const auth = betterAuth({
     plugins: [
         twoFactor(), username(), passkey(), emailOTP({
             async sendVerificationOTP({email, otp, type}) {
-                console.log(email, otp, type)
+                try {
+                   const url = `http://api:8080/mail`
+                    const data = `${email} ${otp} ${type}`
+                    await fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'text/plain'
+                        },
+                        body: data
+                    })
+                } catch (error) {
+                    console.error('Error sending email verification OTP: ', error);
+                }
             },
             otpLength: 6,
             expiresIn: 600,
