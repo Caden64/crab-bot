@@ -33,6 +33,8 @@ services:
       - backend
       - frontend
     restart: always
+    env_file:
+      - ./botapi/.env
   postgres:
     container_name: Postgres
     image: postgres:10.4
