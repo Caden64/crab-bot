@@ -1,5 +1,5 @@
 use poise::serenity_prelude as serenity;
-use poise::serenity_prelude::FullEvent::{GuildMemberAddition, Message, Ready, VoiceStateUpdate};
+use poise::serenity_prelude::FullEvent::{GuildMemberAddition, Ready};
 use poise::serenity_prelude::{CacheHttp, CreateMessage, Mentionable};
 
 use crate::{Data, Error};

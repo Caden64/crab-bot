@@ -6,8 +6,8 @@ use crate::commands::acknowledgement::acknowledge;
 use crate::commands::enroll::enroll;
 use crate::commands::help::help;
 use crate::commands::ping::ping;
-use crate::commands::dump_channel::dump;
 use crate::commands::register_commands::register_commands;
+use crate::commands::modal::modal;
 use crate::utils::config::{get_config, ConfigData, DISCORD_TOKEN, REMOVE_ROLE_ID};
 use crate::utils::event_handler::event_handler;
 use poise::serenity_prelude as serenity;
@@ -37,9 +37,7 @@ async fn main() {
         .to_string();
 
     // intents
-    let intents = serenity::GatewayIntents::non_privileged()
-        | serenity::GatewayIntents::MESSAGE_CONTENT
-        | serenity::GatewayIntents::GUILD_MEMBERS;
+    let intents = serenity::GatewayIntents::all();
 
     // Build the bot framework
     let framework = poise::Framework::builder()
@@ -66,8 +64,7 @@ async fn main() {
                 help(),
                 acknowledge(),
                 news(),
-                #[cfg(debug_assertions)]
-                dump(),
+                modal(),
                 #[cfg(debug_assertions)]
                 register_commands(),
             ],
