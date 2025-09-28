@@ -1,5 +1,5 @@
-use poise::serenity_prelude as serenity;
-use poise::serenity_prelude::FullEvent::{GuildMemberAddition, Ready};
+use poise::serenity_prelude::FullEvent::{GuildMemberAddition, InteractionCreate, Ready};
+use poise::serenity_prelude::{self as serenity, InteractionType};
 use poise::serenity_prelude::{CacheHttp, CreateMessage, Mentionable};
 
 use crate::{Data, Error};
@@ -38,6 +38,13 @@ pub async fn event_handler(
                 ctx.http().get_guild(new_member.guild_id).await?.name
             );
         }
+
+        InteractionCreate { interaction, .. } => {
+            if let Some(test) = interaction.clone().message_component() {
+                println!("{}", test.data.custom_id)
+            }
+        }
+
         _ => {}
     }
     Ok(())
