@@ -14,6 +14,7 @@ serde_json = "1.0.134"
 regex = "1.11.1"
 rand = "0.8.5"
 meta_fetcher = "0.1.1"
+tracing = "0.1.41"
 
 [build-dependencies]
 edres = "0.6.0"

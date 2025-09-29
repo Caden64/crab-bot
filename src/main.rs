@@ -5,16 +5,17 @@ mod utils;
 use crate::commands::acknowledgement::acknowledge;
 use crate::commands::enroll::enroll;
 use crate::commands::help::help;
+use crate::commands::modal::modal;
+use crate::commands::news::news;
 use crate::commands::ping::ping;
 use crate::commands::register_commands::register_commands;
-use crate::commands::modal::modal;
 use crate::utils::config::{get_config, ConfigData, DISCORD_TOKEN, REMOVE_ROLE_ID};
 use crate::utils::event_handler::event_handler;
 use poise::serenity_prelude as serenity;
+use poise::serenity_prelude::GatewayIntents;
 use serde::Deserialize;
 use std::default::Default;
 use std::sync::atomic::AtomicBool;
-use crate::commands::news::news;
 
 // define types for bot use
 #[derive(Debug, Deserialize)]
@@ -37,7 +38,7 @@ async fn main() {
         .to_string();
 
     // intents
-    let intents = serenity::GatewayIntents::all();
+    let intents = GatewayIntents::GUILD_MEMBERS | GatewayIntents::GUILD_MESSAGE_REACTIONS;
 
     // Build the bot framework
     let framework = poise::Framework::builder()
