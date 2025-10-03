@@ -1,7 +1,7 @@
 use poise::serenity_prelude::FullEvent::{GuildMemberAddition, InteractionCreate, Ready};
 use poise::serenity_prelude::{
-    self as serenity, CreateActionRow, CreateInputText, CreateInteractionResponse, CreateModal,
-    InputTextStyle,
+    self as serenity, CreateActionRow, CreateInputText, CreateInteractionResponse,
+    CreateInteractionResponseMessage, CreateModal, InputTextStyle,
 };
 use poise::serenity_prelude::{CacheHttp, CreateMessage, Mentionable};
 use tracing::error;
@@ -45,7 +45,29 @@ pub async fn event_handler(
 
         InteractionCreate { interaction, .. } => match interaction {
             serenity::Interaction::Component(component) => {
-                if component.data.custom_id == "open_modal" {
+                if let Some(id) = component.guild_id {
+                    if id != data.config_data.guild.main.guild_id {
+                        let message = CreateInteractionResponseMessage::new()
+                            .ephemeral(true)
+                            .content("You are not in the right discord server");
+                        component
+                            .create_response(
+                                ctx.http(),
+                                CreateInteractionResponse::Message(message),
+                            )
+                            .await?;
+                        return Ok(());
+                    }
+                } else {
+                    let message = CreateInteractionResponseMessage::new()
+                        .ephemeral(true)
+                        .content("You need to be in a discord server");
+                    component
+                        .create_response(ctx.http(), CreateInteractionResponse::Message(message))
+                        .await?;
+                    return Ok(());
+                }
+                if component.data.custom_id == "register" {
                     let modal = CreateModal::new("custom_modal", "input").components(vec![
                         CreateActionRow::InputText(
                             CreateInputText::new(InputTextStyle::Short, "field one", "field_one")
@@ -61,6 +83,14 @@ pub async fn event_handler(
                     {
                         error!("Failed to show modal {:?}", err)
                     }
+                } else {
+                    let message = CreateInteractionResponseMessage::new()
+                        .ephemeral(true)
+                        .content("Unsupported Operation");
+                    component
+                        .create_response(ctx.http(), CreateInteractionResponse::Message(message))
+                        .await?;
+                    return Ok(());
                 }
             }
             serenity::Interaction::Modal(modal) => {
@@ -83,6 +113,14 @@ pub async fn event_handler(
                     {
                         error!("Failed to respond to modal submit: {err:?}");
                     }
+                } else {
+                    let message = CreateInteractionResponseMessage::new()
+                        .ephemeral(true)
+                        .content("Unsupported Operation");
+                    modal
+                        .create_response(ctx.http(), CreateInteractionResponse::Message(message))
+                        .await?;
+                    return Ok(());
                 }
             }
             _ => {}

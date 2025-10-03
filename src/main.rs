@@ -5,7 +5,7 @@ mod utils;
 use crate::commands::acknowledgement::acknowledge;
 use crate::commands::enroll::enroll;
 use crate::commands::help::help;
-use crate::commands::modal::modal;
+use crate::commands::modal::admin_create_modal;
 use crate::commands::news::news;
 use crate::commands::ping::ping;
 use crate::commands::register_commands::register_commands;
@@ -65,7 +65,7 @@ async fn main() {
                 help(),
                 acknowledge(),
                 news(),
-                modal(),
+                admin_create_modal(),
                 #[cfg(debug_assertions)]
                 register_commands(),
             ],
