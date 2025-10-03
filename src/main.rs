@@ -21,7 +21,7 @@ use std::sync::atomic::AtomicBool;
 #[derive(Debug, Deserialize)]
 struct Data {
     config_data: ConfigData,
-    meeting_time: AtomicBool,
+    _meeting_time: AtomicBool,
 } // User data, which is stored and accessible in all command invocations
 type Error = Box<dyn std::error::Error + Send + Sync>;
 type Context<'a> = poise::Context<'a, Data, Error>;
@@ -81,7 +81,7 @@ async fn main() {
                 poise::builtins::register_globally(ctx, &framework.options().commands).await?;
                 Ok(Data {
                     config_data: config.clone(),
-                    meeting_time: AtomicBool::new(false),
+                    _meeting_time: AtomicBool::new(false),
                 })
             })
         })

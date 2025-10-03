@@ -10,9 +10,9 @@ pub const ADMIN_ROLE_ID: &str = "ADMIN_ROLE_ID";
 // roles.public
 // channels
 pub const ENROLL_CHANNEL: &str = "ENROLL_CHANNEL_ID";
-pub const READING_CHANNEL: &str = "READING_CHANNEL_ID";
+pub const _READING_CHANNEL: &str = "READING_CHANNEL_ID";
 // pub const LOGGING_CHANNEL: &str = "LOGGING_CHANNEL_ID";
-pub const MEETING_CHANNEL: &str = "MEETING_CHANNEL_ID";
+pub const _MEETING_CHANNEL: &str = "MEETING_CHANNEL_ID";
 
 // config file types
 #[derive(Debug, Deserialize, Clone, Serialize)]
