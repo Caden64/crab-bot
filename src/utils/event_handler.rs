@@ -68,21 +68,38 @@ pub async fn event_handler(
                     return Ok(());
                 }
                 if component.data.custom_id == "register" {
+                    println!("test");
                     let modal = CreateModal::new("custom_modal", "input").components(vec![
                         CreateActionRow::InputText(
-                            CreateInputText::new(InputTextStyle::Short, "field one", "field_one")
-                                .placeholder("Type stuff")
+                            CreateInputText::new(InputTextStyle::Short, "First Name", "first_name")
+                                .placeholder("John")
+                                .required(true)
                                 .min_length(1)
+                                .max_length(50),
+                        ),
+                        CreateActionRow::InputText(
+                            CreateInputText::new(
+                                InputTextStyle::Short,
+                                "Last Initial",
+                                "last_initial",
+                            )
+                            .placeholder("D")
+                            .required(true)
+                            .min_length(1)
+                            .max_length(3),
+                        ),
+                        CreateActionRow::InputText(
+                            CreateInputText::new(InputTextStyle::Short, "Student email", "email")
+                                .placeholder("email")
+                                .required(true)
+                                .min_length(17)
                                 .max_length(100),
                         ),
                     ]);
-
-                    if let Err(err) = component
+                    println!("test2");
+                    component
                         .create_response(&ctx.http, CreateInteractionResponse::Modal(modal))
-                        .await
-                    {
-                        error!("Failed to show modal {:?}", err)
-                    }
+                        .await?
                 } else {
                     let message = CreateInteractionResponseMessage::new()
                         .ephemeral(true)
@@ -95,20 +112,36 @@ pub async fn event_handler(
             }
             serenity::Interaction::Modal(modal) => {
                 if modal.data.custom_id == "custom_modal" {
-                    let mut user_text: Option<String> = None;
+                    let mut first_name: Option<String> = None;
+                    let mut last_initial: Option<String> = None;
+                    let mut student_email: Option<String> = None;
 
                     for row in &modal.data.components {
                         for comp in &row.components {
                             if let serenity::all::ActionRowComponent::InputText(input) = comp {
-                                if input.custom_id == "field_one" {
-                                    user_text = Some(input.value.clone().unwrap_or_default());
+                                if input.custom_id == "first_name" {
+                                    first_name = Some(input.value.clone().unwrap_or_default());
+                                } else if input.custom_id == "last_initial" {
+                                    last_initial = Some(input.value.clone().unwrap_or_default());
+                                } else if input.custom_id == "email" {
+                                    student_email = Some(input.value.clone().unwrap_or_default());
                                 }
                             }
                         }
                     }
-                    println!("{}", user_text.unwrap_or("None Given".to_owned()));
+
+                    let content = format!(
+                        "Registration received. First: {}, Last Initial: {}, Email: {}",
+                        first_name.unwrap_or_else(|| "None Given".to_string()),
+                        last_initial.unwrap_or_else(|| "None Given".to_string()),
+                        student_email.unwrap_or_else(|| "None Given".to_string())
+                    );
+
+                    let message = CreateInteractionResponseMessage::new()
+                        .ephemeral(true)
+                        .content(content);
                     if let Err(err) = modal
-                        .create_response(&ctx.http, CreateInteractionResponse::Acknowledge)
+                        .create_response(&ctx.http, CreateInteractionResponse::Message(message))
                         .await
                     {
                         error!("Failed to respond to modal submit: {err:?}");
@@ -117,9 +150,12 @@ pub async fn event_handler(
                     let message = CreateInteractionResponseMessage::new()
                         .ephemeral(true)
                         .content("Unsupported Operation");
-                    modal
+                    if let Err(err) = modal
                         .create_response(ctx.http(), CreateInteractionResponse::Message(message))
-                        .await?;
+                        .await
+                    {
+                        error!("Failed to respond to unsupported modal: {err:?}");
+                    }
                     return Ok(());
                 }
             }

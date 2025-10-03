@@ -27,6 +27,7 @@ fn main() {
                     "Eq".into(),
                     "Hash".into(),
                     "PartialEq".into(),
+                    "strum::EnumIter".into(),
                 ]
                 .into(),
                 ..EnumOptions::minimal()
