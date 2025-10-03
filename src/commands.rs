@@ -1,5 +1,6 @@
 pub mod acknowledgement;
 pub mod admin_register_modal;
+pub mod class_reaction_setup;
 pub mod enroll;
 pub mod help;
 pub mod news;

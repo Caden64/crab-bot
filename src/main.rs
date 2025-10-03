@@ -3,9 +3,10 @@ mod commands;
 mod storage;
 mod utils;
 use crate::commands::acknowledgement::acknowledge;
+use crate::commands::admin_register_modal::admin_create_modal;
+use crate::commands::class_reaction_setup::admin_create_class_selection;
 use crate::commands::enroll::enroll;
 use crate::commands::help::help;
-use crate::commands::modal::admin_create_modal;
 use crate::commands::news::news;
 use crate::commands::ping::ping;
 use crate::commands::register_commands::register_commands;
@@ -84,6 +85,7 @@ async fn main() {
                 acknowledge(),
                 news(),
                 admin_create_modal(),
+                admin_create_class_selection(),
                 #[cfg(debug_assertions)]
                 register_commands(),
             ],

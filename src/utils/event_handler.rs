@@ -1,7 +1,9 @@
-use poise::serenity_prelude::FullEvent::{GuildMemberAddition, InteractionCreate, Ready};
+use poise::serenity_prelude::FullEvent::{
+    GuildMemberAddition, InteractionCreate, ReactionAdd, ReactionRemove, Ready,
+};
 use poise::serenity_prelude::{
     self as serenity, CreateActionRow, CreateInputText, CreateInteractionResponse,
-    CreateInteractionResponseMessage, CreateModal, InputTextStyle,
+    CreateInteractionResponseMessage, CreateModal, EditMember, InputTextStyle, RoleId,
 };
 use poise::serenity_prelude::{CacheHttp, CreateMessage, Mentionable};
 use tracing::error;
@@ -162,6 +164,57 @@ pub async fn event_handler(
             _ => {}
         },
 
+        ReactionAdd { add_reaction, .. } => {
+            if let Some(guild) = add_reaction.guild_id
+                && guild == data.config_data.guild.main.guild_id
+            {
+                println!("yay");
+                println!("{}", add_reaction.emoji);
+                if let Some(user) = add_reaction.user_id {
+                    let mut roles = guild.member(ctx.http(), user).await?.roles;
+                    roles.push(RoleId::new(1423653984748441702));
+
+                    guild
+                        .edit_member(ctx.http(), user, EditMember::new().roles(roles))
+                        .await?;
+                }
+            } else {
+                println!("no")
+            }
+        }
+        ReactionRemove {
+            removed_reaction, ..
+        } => {
+            let Some(guild_id) = removed_reaction.guild_id else {
+                println!("no");
+                return Ok(());
+            };
+
+            match (
+                guild_id == data.config_data.guild.main.guild_id,
+                removed_reaction.user_id,
+            ) {
+                (true, Some(user_id)) => {
+                    let target_role = RoleId::new(1423653984748441702);
+
+                    let member = guild_id.member(ctx.http(), user_id).await?;
+                    if member.roles.contains(&target_role) {
+                        let mut roles = member.roles.clone();
+                        roles.retain(|r| r != &target_role);
+
+                        guild_id
+                            .edit_member(ctx.http(), user_id, EditMember::new().roles(roles))
+                            .await?;
+                    }
+                }
+                (true, None) => {
+                    // No user_id in the event
+                }
+                (false, _) => {
+                    println!("no");
+                }
+            }
+        }
         _ => {}
     }
     Ok(())
