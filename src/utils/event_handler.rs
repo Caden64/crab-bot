@@ -168,15 +168,27 @@ pub async fn event_handler(
             if let Some(guild) = add_reaction.guild_id
                 && guild == data.config_data.guild.main.guild_id
             {
-                println!("yay");
-                println!("{}", add_reaction.emoji);
-                if let Some(user) = add_reaction.user_id {
-                    let mut roles = guild.member(ctx.http(), user).await?.roles;
-                    roles.push(RoleId::new(1423653984748441702));
+                for (idx, emoji) in data.config_data.roles.emoji.iter().enumerate() {
+                    if add_reaction.emoji.unicode_eq(&emoji.1.emoji) {
+                        println!("{}", idx);
+                        println!("{}", emoji.0);
+                        println!("{}", emoji.1.role);
+                        if let Some(user) = add_reaction.user_id {
+                            let mut roles = guild.member(ctx.http(), user).await?.roles;
+                            roles.push(RoleId::new(emoji.1.role));
 
-                    guild
-                        .edit_member(ctx.http(), user, EditMember::new().roles(roles))
-                        .await?;
+                            guild
+                                .edit_member(ctx.http(), user, EditMember::new().roles(roles))
+                                .await?;
+                        }
+                    }
+                }
+
+                if data.config_data.roles.emoji.iter().nth(0).unwrap().1.emoji
+                    == add_reaction.emoji.as_data()
+                {
+                    println!("yay");
+                    println!("{}", add_reaction.emoji);
                 }
             } else {
                 println!("no")
@@ -195,16 +207,23 @@ pub async fn event_handler(
                 removed_reaction.user_id,
             ) {
                 (true, Some(user_id)) => {
-                    let target_role = RoleId::new(1423653984748441702);
+                    for (_, emoji) in data.config_data.roles.emoji.iter().enumerate() {
+                        if removed_reaction.emoji.unicode_eq(&emoji.1.emoji) {
+                            let member = guild_id.member(ctx.http(), user_id).await?;
+                            let target_role = RoleId::new(emoji.1.role);
+                            if member.roles.contains(&target_role) {
+                                let mut roles = member.roles.clone();
+                                roles.retain(|r| r != &target_role);
 
-                    let member = guild_id.member(ctx.http(), user_id).await?;
-                    if member.roles.contains(&target_role) {
-                        let mut roles = member.roles.clone();
-                        roles.retain(|r| r != &target_role);
-
-                        guild_id
-                            .edit_member(ctx.http(), user_id, EditMember::new().roles(roles))
-                            .await?;
+                                guild_id
+                                    .edit_member(
+                                        ctx.http(),
+                                        user_id,
+                                        EditMember::new().roles(roles),
+                                    )
+                                    .await?;
+                            }
+                        }
                     }
                 }
                 (true, None) => {

@@ -35,6 +35,8 @@ pub struct Roles {
     pub public: HashMap<String, u64>,
     #[serde(alias = "PRIVATE")]
     pub private: HashMap<String, u64>,
+    #[serde(alias = "EMOJI")]
+    pub emoji: HashMap<String, EmojiRole>,
 }
 
 #[derive(Debug, Deserialize, Clone, Serialize)]
@@ -75,6 +77,15 @@ pub struct GuildPartners {
     pub send_news: bool,
     #[serde(alias = "NEWS_CHANNEL")]
     pub news_channel: u64,
+}
+
+#[allow(dead_code)]
+#[derive(Deserialize, Serialize, Clone, Debug)]
+pub struct EmojiRole {
+    #[serde(alias = "EMOJI")]
+    pub emoji: String,
+    #[serde(alias = "ROLE")]
+    pub role: u64,
 }
 
 // read and return result of the config file
