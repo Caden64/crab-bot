@@ -3,11 +3,13 @@ use poise::serenity_prelude::FullEvent::{
 };
 use poise::serenity_prelude::{
     self as serenity, CreateActionRow, CreateInputText, CreateInteractionResponse,
-    CreateInteractionResponseMessage, CreateModal, EditMember, InputTextStyle, RoleId,
+    CreateInteractionResponseMessage, CreateModal, EditMember, InputTextStyle,
+    ReactionType::Custom, RoleId,
 };
 use poise::serenity_prelude::{CacheHttp, CreateMessage, Mentionable};
 use tracing::error;
 
+use crate::utils::config::EmojiType;
 use crate::{Data, Error};
 
 pub async fn event_handler(
@@ -165,31 +167,33 @@ pub async fn event_handler(
         },
 
         ReactionAdd { add_reaction, .. } => {
+            println!("HIT");
             if let Some(guild) = add_reaction.guild_id
                 && guild == data.config_data.guild.main.guild_id
             {
-                for (idx, emoji) in data.config_data.roles.emoji.iter().enumerate() {
-                    if add_reaction.emoji.unicode_eq(&emoji.1.emoji) {
-                        println!("{}", idx);
-                        println!("{}", emoji.0);
-                        println!("{}", emoji.1.role);
-                        if let Some(user) = add_reaction.user_id {
-                            let mut roles = guild.member(ctx.http(), user).await?.roles;
-                            roles.push(RoleId::new(emoji.1.role));
+                /*
+                               for (idx, emoji) in data.config_data.roles.emoji.iter().enumerate() {
+                                   if add_reaction.emoji.unicode_eq(&emoji.1.emoji) {
+                                       println!("{}", idx);
+                                       println!("{}", emoji.0);
+                                       println!("{}", emoji.1.role);
+                                       if let Some(user) = add_reaction.user_id {
+                                           let mut roles = guild.member(ctx.http(), user).await?.roles;
+                                           roles.push(RoleId::new(emoji.1.role));
 
-                            guild
-                                .edit_member(ctx.http(), user, EditMember::new().roles(roles))
-                                .await?;
-                        }
-                    }
-                }
-
+                                           guild
+                                               .edit_member(ctx.http(), user, EditMember::new().roles(roles))
+                                               .await?;
+                                       }
+                                   }
+                               }
                 if data.config_data.roles.emoji.iter().nth(0).unwrap().1.emoji
                     == add_reaction.emoji.as_data()
                 {
                     println!("yay");
                     println!("{}", add_reaction.emoji);
                 }
+                */
             } else {
                 println!("no")
             }
@@ -207,22 +211,45 @@ pub async fn event_handler(
                 removed_reaction.user_id,
             ) {
                 (true, Some(user_id)) => {
+                    match removed_reaction.emoji.clone() {
+                        Custom {
+                            animated: _,
+                            id,
+                            name: _,
+                        } => {
+                            println!("YES");
+                            println!("{}", id)
+                        }
+                        serenity::ReactionType::Unicode(data) => {
+                            println!("{}", data)
+                        }
+                        _ => {}
+                    }
                     for (_, emoji) in data.config_data.roles.emoji.iter().enumerate() {
-                        if removed_reaction.emoji.unicode_eq(&emoji.1.emoji) {
-                            let member = guild_id.member(ctx.http(), user_id).await?;
-                            let target_role = RoleId::new(emoji.1.role);
-                            if member.roles.contains(&target_role) {
-                                let mut roles = member.roles.clone();
-                                roles.retain(|r| r != &target_role);
+                        // check if it's an ID for a custom
+                        if emoji.0.is_ascii() {
+                            println!("{}", emoji.0)
+                        }
+                        match &emoji.1.emoji {
+                            EmojiType::Str(string_data) => {
+                                if removed_reaction.emoji.unicode_eq(&string_data) {
+                                    let member = guild_id.member(ctx.http(), user_id).await?;
+                                    let target_role = RoleId::new(emoji.1.role);
+                                    if member.roles.contains(&target_role) {
+                                        let mut roles = member.roles.clone();
+                                        roles.retain(|r| r != &target_role);
 
-                                guild_id
-                                    .edit_member(
-                                        ctx.http(),
-                                        user_id,
-                                        EditMember::new().roles(roles),
-                                    )
-                                    .await?;
+                                        guild_id
+                                            .edit_member(
+                                                ctx.http(),
+                                                user_id,
+                                                EditMember::new().roles(roles),
+                                            )
+                                            .await?;
+                                    }
+                                }
                             }
+                            EmojiType::Id(_discord_id) => {}
                         }
                     }
                 }

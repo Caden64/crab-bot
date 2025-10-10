@@ -83,13 +83,23 @@ pub struct GuildPartners {
 #[derive(Deserialize, Serialize, Clone, Debug)]
 pub struct EmojiRole {
     #[serde(alias = "EMOJI")]
-    pub emoji: String,
+    pub emoji: EmojiType,
     #[serde(alias = "ROLE")]
     pub role: u64,
 }
 
+#[derive(Deserialize, Serialize, Clone, Debug)]
+#[serde(untagged)]
+#[serde(rename_all = "UPPERCASE")]
+pub enum EmojiType {
+    Str(String),
+    Id(u64),
+}
+
 // read and return result of the config file
 pub fn get_config() -> Result<ConfigData, toml::de::Error> {
-    let data = std::fs::read_to_string("config.toml").expect("Unable to find config.toml file");
+    let path = std::env::current_dir().unwrap();
+    println!("{:?}", path);
+    let data = std::fs::read_to_string("../config.toml").expect("Unable to find config.toml file");
     toml::from_str(&data)
 }
