@@ -22,3 +22,4 @@ edres = "0.6.0"
 serde = { version = "1.0.216", features = ["derive"] }
 toml = "0.8.19"
 strum = { version = "0.27.2", features = ["derive"] }
+poise = "0.6.1"

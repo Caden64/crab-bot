@@ -1,3 +1,5 @@
+use poise::serenity_prelude::EmojiId;
+use poise::serenity_prelude::ReactionType;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 // constants
@@ -86,14 +88,33 @@ pub struct EmojiRole {
     pub emoji: EmojiType,
     #[serde(alias = "ROLE")]
     pub role: u64,
+    #[serde(alias = "NAME")]
+    pub name: String,
+    #[serde(alias = "ANIMATED")]
+    pub animated: bool,
 }
 
 #[derive(Deserialize, Serialize, Clone, Debug)]
-#[serde(untagged)]
 #[serde(rename_all = "UPPERCASE")]
+#[serde(untagged)]
 pub enum EmojiType {
     Str(String),
     Id(u64),
+}
+
+impl Into<ReactionType> for EmojiRole {
+    fn into(self) -> ReactionType {
+        match self.emoji {
+            EmojiType::Id(discord_id) => {
+                return ReactionType::Custom {
+                    animated: self.animated,
+                    id: EmojiId::new(discord_id),
+                    name: Some(self.name.into()),
+                };
+            }
+            EmojiType::Str(emoji_str) => return ReactionType::Unicode(emoji_str),
+        }
+    }
 }
 
 // read and return result of the config file
