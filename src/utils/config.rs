@@ -92,6 +92,8 @@ pub struct EmojiRole {
     pub name: String,
     #[serde(alias = "ANIMATED")]
     pub animated: bool,
+    #[serde(alias = "MESSAGE")]
+    pub message: String,
 }
 
 #[derive(Deserialize, Serialize, Clone, Debug)]
