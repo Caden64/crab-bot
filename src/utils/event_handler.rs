@@ -3,13 +3,17 @@ use poise::serenity_prelude::FullEvent::{
 };
 use poise::serenity_prelude::{
     self as serenity, CreateActionRow, CreateInputText, CreateInteractionResponse,
-    CreateInteractionResponseMessage, CreateModal, EditMember, InputTextStyle,
-    ReactionType::Custom, RoleId,
+    CreateInteractionResponseMessage, CreateModal, EditMember, InputTextStyle, ReactionType,
+    ReactionType::Custom, RoleId, SelectMenu,
 };
-use poise::serenity_prelude::{CacheHttp, CreateMessage, Mentionable};
+use poise::serenity_prelude::{
+    CacheHttp, CreateInteractionResponseFollowup, CreateMessage, CreateSelectMenu, Mentionable,
+};
 use tracing::error;
 
-use crate::utils::config::EmojiType;
+use crate::storage::save_user::save_to_json;
+use crate::storage::user::User;
+use crate::utils::config::{EmojiType, REMOVE_ROLE_ID};
 use crate::{Data, Error};
 
 pub async fn event_handler(
@@ -72,7 +76,6 @@ pub async fn event_handler(
                     return Ok(());
                 }
                 if component.data.custom_id == "register" {
-                    println!("test");
                     let modal = CreateModal::new("custom_modal", "input").components(vec![
                         CreateActionRow::InputText(
                             CreateInputText::new(InputTextStyle::Short, "First Name", "first_name")
@@ -100,7 +103,6 @@ pub async fn event_handler(
                                 .max_length(100),
                         ),
                     ]);
-                    println!("test2");
                     component
                         .create_response(&ctx.http, CreateInteractionResponse::Modal(modal))
                         .await?
@@ -115,7 +117,23 @@ pub async fn event_handler(
                 }
             }
             serenity::Interaction::Modal(modal) => {
-                if modal.data.custom_id == "custom_modal" {
+                if modal.data.custom_id == "custom_modal"
+                    && modal.guild_id.is_some()
+                    && modal
+                        .guild_id
+                        .unwrap()
+                        .member(ctx.http(), modal.user.id.get())
+                        .await?
+                        .roles
+                        .contains(&RoleId::new(
+                            data.config_data
+                                .roles
+                                .private
+                                .get(REMOVE_ROLE_ID)
+                                .unwrap()
+                                .to_owned(),
+                        ))
+                {
                     let mut first_name: Option<String> = None;
                     let mut last_initial: Option<String> = None;
                     let mut student_email: Option<String> = None;
@@ -135,11 +153,45 @@ pub async fn event_handler(
                     }
 
                     let content = format!(
-                        "Registration received. First: {}, Last Initial: {}, Email: {}",
-                        first_name.unwrap_or_else(|| "None Given".to_string()),
-                        last_initial.unwrap_or_else(|| "None Given".to_string()),
-                        student_email.unwrap_or_else(|| "None Given".to_string())
+                        "Registration received.\nFirst: {},\nLast Initial: {},\nEmail: {}",
+                        first_name
+                            .clone()
+                            .unwrap_or_else(|| "None Given".to_string()),
+                        last_initial
+                            .clone()
+                            .unwrap_or_else(|| "None Given".to_string()),
+                        student_email
+                            .clone()
+                            .unwrap_or_else(|| "None Given".to_string())
                     );
+
+                    let _ = save_to_json(&User {
+                        user_id: modal.user.id.get(),
+                        user_name: modal.user.name.to_ascii_lowercase(),
+                        name: format!("{} {}", first_name.unwrap(), last_initial.unwrap()),
+                        role: "".into(),
+                        email: student_email.unwrap(),
+                        points: 0,
+                    });
+
+                    let roles = modal
+                        .guild_id
+                        .unwrap()
+                        .member(ctx.http(), modal.user.id)
+                        .await?;
+                    roles
+                        .remove_role(
+                            ctx.http(),
+                            RoleId::new(
+                                data.config_data
+                                    .roles
+                                    .private
+                                    .get(REMOVE_ROLE_ID)
+                                    .unwrap()
+                                    .to_owned(),
+                            ),
+                        )
+                        .await?;
 
                     let message = CreateInteractionResponseMessage::new()
                         .ephemeral(true)
@@ -150,6 +202,17 @@ pub async fn event_handler(
                     {
                         error!("Failed to respond to modal submit: {err:?}");
                     }
+                } else if modal.guild_id.is_none() {
+                    let message = CreateInteractionResponseMessage::new()
+                        .ephemeral(true)
+                        .content("Must be done in a discord server");
+                    if let Err(err) = modal
+                        .create_response(ctx.http(), CreateInteractionResponse::Message(message))
+                        .await
+                    {
+                        error!("Failed to respond to `Must be done in a discord server`: {err:?}");
+                    }
+                    return Ok(());
                 } else {
                     let message = CreateInteractionResponseMessage::new()
                         .ephemeral(true)
@@ -167,42 +230,79 @@ pub async fn event_handler(
         },
 
         ReactionAdd { add_reaction, .. } => {
-            println!("HIT");
-            if let Some(guild) = add_reaction.guild_id
-                && guild == data.config_data.guild.main.guild_id
-            {
-                /*
-                               for (idx, emoji) in data.config_data.roles.emoji.iter().enumerate() {
-                                   if add_reaction.emoji.unicode_eq(&emoji.1.emoji) {
-                                       println!("{}", idx);
-                                       println!("{}", emoji.0);
-                                       println!("{}", emoji.1.role);
-                                       if let Some(user) = add_reaction.user_id {
-                                           let mut roles = guild.member(ctx.http(), user).await?.roles;
-                                           roles.push(RoleId::new(emoji.1.role));
+            let Some(guild_id) = add_reaction.guild_id else {
+                // not from a guild
+                return Ok(());
+            };
 
-                                           guild
-                                               .edit_member(ctx.http(), user, EditMember::new().roles(roles))
-                                               .await?;
-                                       }
-                                   }
-                               }
-                if data.config_data.roles.emoji.iter().nth(0).unwrap().1.emoji
-                    == add_reaction.emoji.as_data()
-                {
-                    println!("yay");
-                    println!("{}", add_reaction.emoji);
+            match (
+                guild_id == data.config_data.guild.main.guild_id,
+                add_reaction.user_id,
+            ) {
+                (true, Some(user_id)) => {
+                    for (_, emoji_cfg) in data.config_data.roles.emoji.iter().enumerate() {
+                        // Match against your config enum
+                        match &emoji_cfg.1.emoji {
+                            // Unicode emoji mapping
+                            EmojiType::Str(expected) => {
+                                if add_reaction.emoji.unicode_eq(expected) {
+                                    let member = guild_id.member(ctx.http(), user_id).await?;
+                                    let target_role = RoleId::new(emoji_cfg.1.role);
+
+                                    if !member.roles.contains(&target_role) {
+                                        let mut roles = member.roles.clone();
+                                        roles.push(target_role);
+
+                                        guild_id
+                                            .edit_member(
+                                                ctx.http(),
+                                                user_id,
+                                                EditMember::new().roles(roles),
+                                            )
+                                            .await?;
+                                    }
+                                }
+                            }
+                            // Custom emoji mapping by ID
+                            EmojiType::Id(expected_emoji_id) => {
+                                if let Custom { id, .. } = add_reaction.emoji {
+                                    // Compare your stored ID to the Custom id
+                                    if id.get() == *expected_emoji_id {
+                                        let member = guild_id.member(ctx.http(), user_id).await?;
+                                        let target_role = RoleId::new(emoji_cfg.1.role);
+
+                                        if !member.roles.contains(&target_role) {
+                                            let mut roles = member.roles.clone();
+                                            roles.push(target_role);
+
+                                            guild_id
+                                                .edit_member(
+                                                    ctx.http(),
+                                                    user_id,
+                                                    EditMember::new().roles(roles),
+                                                )
+                                                .await?;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
-                */
-            } else {
-                println!("no")
+                (true, None) => {
+                    // No user_id in the event
+                }
+                (false, _) => {
+                    // Not your main guild
+                }
             }
+
+            return Ok(());
         }
         ReactionRemove {
             removed_reaction, ..
         } => {
             let Some(guild_id) = removed_reaction.guild_id else {
-                println!("no");
                 return Ok(());
             };
 
@@ -211,20 +311,6 @@ pub async fn event_handler(
                 removed_reaction.user_id,
             ) {
                 (true, Some(user_id)) => {
-                    match removed_reaction.emoji.clone() {
-                        Custom {
-                            animated: _,
-                            id,
-                            name: _,
-                        } => {
-                            println!("YES");
-                            println!("{}", id)
-                        }
-                        serenity::ReactionType::Unicode(data) => {
-                            println!("{}", data)
-                        }
-                        _ => {}
-                    }
                     for (_, emoji) in data.config_data.roles.emoji.iter().enumerate() {
                         // check if it's an ID for a custom
                         if emoji.0.is_ascii() {
@@ -257,7 +343,6 @@ pub async fn event_handler(
                     // No user_id in the event
                 }
                 (false, _) => {
-                    println!("no");
                 }
             }
         }

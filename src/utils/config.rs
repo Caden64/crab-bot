@@ -119,6 +119,17 @@ impl Into<ReactionType> for EmojiRole {
     }
 }
 
+impl PartialEq<ReactionType> for EmojiRole {
+    fn eq(&self, other: &ReactionType) -> bool {
+        match self.emoji.clone() {
+            EmojiType::Id(discord_id) => {
+                return other.as_data() == format!("<{}:{}>", self.name, discord_id);
+            }
+            EmojiType::Str(emoji_str) => return other.unicode_eq(&*emoji_str),
+        }
+    }
+}
+
 // read and return result of the config file
 pub fn get_config() -> Result<ConfigData, toml::de::Error> {
     let path = std::env::current_dir().unwrap();
